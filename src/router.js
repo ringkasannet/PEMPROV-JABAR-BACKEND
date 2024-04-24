@@ -42,8 +42,6 @@ router.get('/processEmbeddings', async (req, res) => {
         res.status(500).send(error)
     }
 })
-
-// embedding
 router.get('/getEmbedding', async (req, res) => {
   console.log('start getEmbedding');
   const embeddingDoc = await getEmbedding();
