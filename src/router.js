@@ -22,6 +22,15 @@ router.get('/about', (req, res) => {
 });
 
 router.get('/getAllBUMD', async (req, res) => {
+<<<<<<< HEAD
+    try {
+        console.log('memanggil getAllBUMD')
+        const listBUMD = await getAllBUMD()
+        res.send(listBUMD)
+    
+    }catch(error){
+        res.status(500).send(error.message);
+=======
     console.log('memanggil getAllBUMD');
     const listBUMD = await getAllBUMD();
     res.send(listBUMD);
@@ -34,6 +43,7 @@ router.get('/processEmbeddings', async (req, res) => {
         res.send(embededDoc); 
     } catch(error){
         res.status(500).send(error)
+>>>>>>> update-embedding
     }
 })
 
