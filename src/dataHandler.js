@@ -1,32 +1,36 @@
-import { getCollectionBUMD } from "./mongodb_handler.js";
+import { collectionBUMD } from "./mongodb_handler.js";
 import * as myembed from "./embedding.js";
 import * as pc from "./pinecone.js";
 import { ObjectId } from "mongodb";
 
+
+
 export async function getAllBUMD() {
   try {
-    const results = await getCollectionBUMD().find({}).toArray(); //TODO: check error handling
+    console.log('in getAllBUMD'); 
+    const results = await collectionBUMD.find({}).toArray(); //TODO: check error handling
     return results;
   } catch (error) {
     throw error;
   }
 }
-
+ 
 export async function getBUMDNotEmbedded() {
   const BUMDList = await getAllBUMD();
   const BUMDNotEmbedded = BUMDList.filter((BUMDItem) => {
     return BUMDItem.embedding !== true;
   });
 
-  return BUMDNotEmbedded;
+  return BUMDNotEmbedded;  
 }
 
 export async function getSampleBUMD() {
   const idObject1 = new ObjectId("662650b65f0d70008a1ac6e2");
   const idObject2 = new ObjectId("66265ade5b5554f1e30199b4");
 
-  const sampleBUMD1 = await getCollectionBUMD().find({ _id: idObject1 }).toArray();
-  const sampleBUMD2 = await getCollectionBUMD().find({ _id: idObject2 }).toArray();
+
+  const sampleBUMD1 = await collectionBUMD.find({ _id: idObject1 }).toArray();
+  const sampleBUMD2 = await collectionBUMD.find({ _id: idObject2 }).toArray();
   return [sampleBUMD1[0], sampleBUMD2[0]];
 }
 
@@ -64,15 +68,17 @@ export async function processEmbeddings() {
     return id;  
   });
   console.log("docId:", docId);
-  getCollectionBUMD().updateMany({ _id: { $in: docId } }, { $set: { embedding: true } });
+
+
+  await collectionBUMD.updateMany({ _id: { $in: docId } }, { $set: { embedding: true } });
   return arrayEmbeddings.map((embedding) => {return embedding.id});
 }
 
 
 export async function removePropertyMongoDb(propertyName) {
-  getCollectionBUMD().updateMany({}, { $unset: { propertyName: "" } });
+  collectionBUMD.updateMany({}, { $unset: { propertyName: "" } });
 }
 
 export async function addPropertyMongoDb(propertyName, propertyValue) {
-  getCollectionBUMD().updateMany({}, { $set: { propertyName: propertyValue } });
+  collectionBUMD.updateMany({}, { $set: { propertyName: propertyValue } });
 }
