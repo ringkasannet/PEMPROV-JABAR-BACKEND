@@ -6,12 +6,11 @@ import * as pc from "./pinecone.js";
 import { router } from "./router.js";
 import { initConnection } from "./mongodb_handler.js";
 
-const app = express();
 
 // app.get('/', (req, res) => {
 //   res.send('Hello ! YES')
 // })
-
+const app = express();
 const port = parseInt(process.env.PORT) || 8080;
 
 app.use("/", router);
