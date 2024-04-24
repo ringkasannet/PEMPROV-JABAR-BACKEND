@@ -1,1 +1,6 @@
 runtime: nodejs18
+handlers:
+- url: /images
+  static_dir: static/images
+  http_headers:
+    Access-Control-Allow-Origin: '*'

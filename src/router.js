@@ -13,6 +13,7 @@ router.use(timeLog)
 
 // define the home page route
 router.get('/', (req, res) => {
+    
     res.send('Ini alamat dasar router')
 })
 // define the about route
@@ -21,9 +22,14 @@ router.get('/about', (req, res) => {
 })
 
 router.get('/getAllBUMD', async (req, res) => {
-    console.log('memanggil getAllBUMD')
-    const listBUMD = await getAllBUMD()
-    res.send(listBUMD)
+    try {
+        console.log('memanggil getAllBUMD')
+        const listBUMD = await getAllBUMD()
+        res.send(listBUMD)
+    
+    }catch(error){
+        res.status(500).send(error.message);
+    }
 })
 
 // router.get('/getBUMDNotEmbedded', async (req, res) => {
