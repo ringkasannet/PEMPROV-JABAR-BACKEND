@@ -6,8 +6,16 @@ export let dbClient
 
 const dbName="pemprov-jabar-bumd";
 const colNameBUMD="BUMD";
-export let collectionBUMD 
+let _collectionBUMD=null;
 
+export function getCollectionBUMD(){
+  //wait until _collectionBUMD is not null
+  if (_collectionBUMD==null){
+    setTimeout(getCollectionBUMD,100)
+  } else {
+    return _collectionBUMD
+  }
+} 
 
 export async function initConnection() {
   dbClient = new MongoClient(uri, {
@@ -23,7 +31,7 @@ export async function initConnection() {
     await dbClient.connect();
     await checkConnection();
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
-    collectionBUMD = dbClient.db(dbName).collection(colNameBUMD);
+    _collectionBUMD = dbClient.db(dbName).collection(colNameBUMD);
     return true;
   } catch(error){
     console.log(error)
@@ -31,7 +39,7 @@ export async function initConnection() {
   };
 };
 
-export async function clostConnection(){
+export async function closeConnection(){
   try {
     await dbClient.close();
     return true;
@@ -49,5 +57,7 @@ export async function checkConnection(){
     throw error
   };
 };
+
+
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version

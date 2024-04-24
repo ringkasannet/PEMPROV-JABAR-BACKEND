@@ -1,5 +1,5 @@
 import express from 'express'
-import { getAllBUMD, getBUMDNotEmbedded, getEmbedding, updateVDB, updateStatMongoDb } from './dataHandler.js'
+import { getAllBUMD, getBUMDNotEmbedded, addPropertyMongoDb, processEmbeddings } from './dataHandler.js'
 
 export const router = express.Router()
 
@@ -32,6 +32,17 @@ router.get('/getBUMDNotEmbedded', async (req, res) => {
     console.log("not embedded:", BUMDNotEmbedded);
     res.send(BUMDNotEmbedded);
 });
+
+router.get('/processEmbeddings', async (req, res) => {
+    try {
+        const embededDoc = await processEmbeddings();
+        console.log("got docs:",embededDoc);
+        res.send(embededDoc);
+    } catch(error){
+        res.status(500).send(error)
+    }
+})
+
 // embedding
 router.get('/getEmbedding', async (req, res) => {
   console.log('start getEmbedding');
@@ -51,3 +62,8 @@ router.get('/updateStatMongoDB', async (req, res) => {
     console.log('update status embedding di mongodb');
     res.send('update status embedding mongodb');
 });
+
+router.get('/addProperty/:propName/:propValue', (req, res) => {
+    addPropertyMongoDb(req.params.propName, req.params.propValue);
+    res.send({status: 'ok'})
+})

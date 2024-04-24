@@ -5,6 +5,7 @@ import * as myembed from './embedding.js';
 import * as pc from './pinecone.js';
 import { router } from './router.js';
 import { initConnection } from './mongodb_handler.js';
+import cors from 'cors';
 
 const app = express();
 const port = 3000;
@@ -18,6 +19,7 @@ app.listen(port, () => {
 });
 
 app.use('/', router);
+app.use(cors());
 
 try {
   await initConnection()
