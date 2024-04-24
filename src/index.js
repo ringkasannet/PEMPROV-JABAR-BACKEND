@@ -1,30 +1,27 @@
-import express from 'express'
-import { dbClient } from './mongodb_handler.js'
-import { ObjectId } from 'mongodb';
+import express from "express";
+import { ObjectId } from "mongodb";
+// import { dbClient } from './mongodb_handler.js'
+import * as myembed from "./embedding.js";
+import * as pc from "./pinecone.js";
+import { router } from "./router.js";
+import { initConnection } from "./mongodb_handler.js";
 
-const app = express()
-const port = 3000
+const app = express();
 
-app.get('/', (req, res) => {
-  res.send('Hello ! YES')
-})
+// app.get('/', (req, res) => {
+//   res.send('Hello ! YES')
+// })
 
-app.get('/cekKesesuaian', (req, res) => {
+const port = parseInt(process.env.PORT) || 8080;
 
-    //
-    res.send('Hello ! YES')
-  })
+app.use("/", router);
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
-
-const collection = dbClient.db("pemprov-jabar-bumd").collection("BUMD");
-
-const objectId = new ObjectId("662650b65f0d70008a1ac6e2");
-
-const results = await collection.find({ _id: objectId }).toArray();
-console.log('Found documents =>', results[0].name); 
-
-//check all items in collection already embedded or not
-//if not pinecone 
+try {
+  await initConnection();
+  app.listen(port, () => {
+    console.log(`Example app listening on port ${port}`);
+  });
+  // console.log("client is:", mongoDbHandler.dbClient);
+} catch (error) {
+  console.log(error);
+}

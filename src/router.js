@@ -26,14 +26,18 @@ router.get('/getAllBUMD', async (req, res) => {
     res.send(listBUMD)
 })
 
-router.get('/getBUMDNotEmbedded', async (req, res) => {
-    console.log('memanggil getBUMDNotEmbedded')
-    const BUMDNotEmbedded = await getBUMDNotEmbedded()
-    console.log("not embedded:", BUMDNotEmbedded)
-    res.send(BUMDNotEmbedded)
-})
+// router.get('/getBUMDNotEmbedded', async (req, res) => {
+//     console.log('memanggil getBUMDNotEmbedded')
+//     const BUMDNotEmbedded = await getBUMDNotEmbedded()
+//     console.log("not embedded:", BUMDNotEmbedded)
+//     res.send(BUMDNotEmbedded)
+// })
 
 
+//processEmbedding
+//getAllBUMD
+//getRecommendedBUMD(userQuery): [{BUMD,score,explanation}]
 
+//adminSystem
 
 
