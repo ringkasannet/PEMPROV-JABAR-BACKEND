@@ -16,41 +16,38 @@ export async function initConnection() {
       strict: true,
       deprecationErrors: true,
     }
-  });
+});
 
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await dbClient.connect();
-    await checkConnection()
+    await checkConnection();
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
-    collectionBUMD= dbClient.db(dbName).collection(colNameBUMD);
+    collectionBUMD = dbClient.db(dbName).collection(colNameBUMD);
     return true;
-  } catch (error) {
+  } catch(error){
     console.log(error)
     return false;
-  }
-}
+  };
+};
+
 export async function clostConnection(){
   try {
     await dbClient.close();
     return true;
   } catch(error){
     return false;
-  }
-
-}
+  };
+};
 
 export async function checkConnection(){
-  try{
+  try {
     await dbClient.db("admin").command({ ping: 1 });
     return true
   } catch(error){
     return false
     throw error
-  }
-  
-
-}
+  };
+};
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
-
