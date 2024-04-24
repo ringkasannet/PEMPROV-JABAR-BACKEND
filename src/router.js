@@ -1,5 +1,5 @@
 import express from 'express'
-import { getAllBUMD, getBUMDNotEmbedded, addPropertyMongoDb, processEmbeddings } from './dataHandler.js'
+import { getAllBUMD, getBUMDNotEmbedded, addPropertyMongoDb, processEmbeddings, processQuery } from './dataHandler.js'
 
 export const router = express.Router()
 
@@ -30,10 +30,20 @@ router.get('/getAllBUMD', async (req, res) => {
 router.get('/processEmbeddings', async (req, res) => {
     try {
         const embededDoc = await processEmbeddings();
-        console.log("got docs:",embededDoc);
+        console.log("got docs:", embededDoc);
         res.send(embededDoc); 
     } catch(error){
         res.status(500).send(error)
+    }
+})
+
+router.get('/askQuestion/:query', async(req, res) => {
+    try {
+        const query = await processQuery(req.params.query);
+        res.send(query); 
+    } catch(error){
+        console.log(error)
+        res.send(error)
     }
 })
 

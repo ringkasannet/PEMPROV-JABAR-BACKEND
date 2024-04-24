@@ -20,13 +20,24 @@ export async function upsertManyToPineCone(vectors){
   console.log('pineResult:',pineResult)
 }
 
-export async function matchvector(pertanyaan){
-  const queryres = await index.query({
-    topK: 10,
-    vector: pertanyaan,
-    includeValues: true,
-    includeMetadata: true
-  });
+// punten a masih pake loop jadul buat ngambil top 5 dari pinecone
+export async function getTopFive(response){
+  const topFive = [];
+  for(let i = 0; i < 5; i++){
+    topFive.push(response.matches[i].id);
+  };
+  
+  return topFive;
+}
 
-  return queryres;
+export async function matchVectorQuery(query){
+  console.log('process matching vector query')
+  const queryresponse = await index.query({
+    topK: 10,
+    vector: query,
+    includeValues: true
+  });
+  
+  const topFive = await getTopFive(queryresponse);
+  return topFive;
 };

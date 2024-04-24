@@ -1,8 +1,6 @@
 import express from 'express';
 import { ObjectId } from 'mongodb';
 // import { dbClient } from './mongodb_handler.js'
-import * as myembed from "./embedding.js";
-import * as pc from "./pinecone.js";
 import { router } from "./router.js";
 import { initConnection } from "./mongodb_handler.js";
 import cors from 'cors';
@@ -11,7 +9,7 @@ import cors from 'cors';
 //   res.send('Hello ! YES')
 // })
 const app = express();
-const port = parseInt(process.env.PORT) || 8080;
+const port = parseInt(process.env.PORT) || 3000;
 
 app.use(cors());
 app.use("/", router);
