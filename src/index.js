@@ -8,22 +8,22 @@ import { initConnection } from './mongodb_handler.js';
 import cors from 'cors';
 
 const app = express();
-const port = 3000;
+const port = parseInt(process.env.PORT) || 8080;
 
 // app.get('/', (req, res) => {
 //   res.send('Hello ! YES')
 // })
-
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-});
 
 app.use('/', router);
 app.use(cors());
 
 try {
   await initConnection()
+  app.listen(port, () => {
+    console.log(`Example app listening on port ${port}`)
+  });
+  
   // console.log("client is:", mongoDbHandler.dbClient); 
 } catch(error) {
-  console.log(error)
-};
+  console.log(error) 
+}; 
