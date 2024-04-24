@@ -53,8 +53,6 @@ router.get('/processEmbeddings', async (req, res) => {
 >>>>>>> update-embedding
     }
 })
-
-// embedding
 router.get('/getEmbedding', async (req, res) => {
   console.log('start getEmbedding');
   const embeddingDoc = await getEmbedding();
