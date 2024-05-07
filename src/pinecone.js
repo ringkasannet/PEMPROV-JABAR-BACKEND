@@ -26,14 +26,14 @@ export async function getTopFive(response){
   return topFive;
 };
 
-export async function matchVectorQuery(query){
+export async function matchVectorQuery(query,n){
   console.log('fungsi matchVectorQuery()');
-  const queryresponse = await index.query({
-    topK: 10,
+  const queryResponse = await index.query({
+    topK: n,
     vector: query,
     includeValues: true
   });
   
-  const topFive = await getTopFive(queryresponse);
-  return topFive;
+  // const topFive = await getTopFive(queryresponse); //TODO remove
+  return queryResponse.matches;
 };

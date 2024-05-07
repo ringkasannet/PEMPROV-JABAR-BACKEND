@@ -1,7 +1,10 @@
 import OpenAI from 'openai';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 const openai = new OpenAI({
-  apiKey : 'sk-proj-8pAAtgxfPj5mvCNhOtfIT3BlbkFJUQ57dMNBzAxlcr9GetC3',
+  apiKey : process.env.OPENAI_API_KEY
 });
 
 export async function embedding(input){

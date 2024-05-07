@@ -4,6 +4,7 @@ import * as pc from './pinecone.js';
 import * as embeddingOpenAI from './openAI.js';
 import * as embeddingGemini from './geminiAI.js';
 
+
 export async function getAllBUMD(){
   try {
     console.log(`fungsi getAllBUMD()`);
@@ -87,7 +88,7 @@ async function embeddingQuery(queryValue){
 };
 
 async function getMatchesDocsAndPinecone(topFive){
-  console.log('fungsi getMatchesDocsAndPinecone()');
+  console.log('fungsi getMatchesDocsAndPinecone(), top five:',topFive);
   const docId = topFive.map((idth) => {
     const id = new ObjectId(idth);
     return id;
@@ -101,15 +102,15 @@ async function getMatchesDocsAndPinecone(topFive){
   };
 };
 
-async function matchQueryToPinecone(queryValue){
+async function matchQueryToPinecone(queryValue){ 
   console.log('fungsi matchQueryToPinecone()');
   const embeddedQuery = await embeddingQuery(queryValue);
-  const matchingResults = await pc.matchVectorQuery(embeddedQuery);
+  const matchingResults = await pc.matchVectorQuery(embeddedQuery,5);
   const bumdList = await getMatchesDocsAndPinecone(matchingResults);
   return bumdList;
 };
 
-async function getQueryResults(queryValue, sources){
+async function getQueryResults(queryValue, sources){ //TODO dihapus
   console.log('fungsi getQueryResults()');
   
   // TODO
@@ -129,10 +130,12 @@ export async function processQuery(queryValue){
   console.log('fungsi processQuery()');
   console.log('query:', queryValue);
   // asli
-  // const matchingResults = await matchQueryToPinecone(queryValue);
-  // dummy
-  const matchingResults = await getSampleBUMD();
+  const matchingResults = await matchQueryToPinecone(queryValue);
   
+  // dummy
+  // const matchingResults = await getSampleBUMD();
+  console.log('matchingResults:', matchingResults);
+
   const sourcesList = matchingResults.map((document) => {
     return { 
       id: document._id.toString(),
@@ -142,7 +145,9 @@ export async function processQuery(queryValue){
     };
   });
 
-  const queryResult = await getQueryResults(queryValue, sourcesList);
+  const queryResult = await embeddingGemini.penjelasanPrompt(queryValue, sourcesList);
+  //array of promise
+  console.log('queryResult:', queryResult);
   return queryResult;
 };
 
