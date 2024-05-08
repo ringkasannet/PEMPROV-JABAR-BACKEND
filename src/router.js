@@ -67,7 +67,7 @@ router.get("/evaluasiBUMD/:bumdId/:query", async (req, res) => {
 
     for await (const chunk of streamOpenAi) {
       // console.log(chunk.choices[0].delta.content);
-      console.info("chunk.choices[0].delta.content");
+      // console.info("chunk.choices[0].delta.content");
       if (chunk.choices[0].delta.content) {
         res.write(chunk.choices[0].delta.content);
         // res.write("halo");
