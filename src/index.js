@@ -23,7 +23,9 @@ const options = {
 
 try {
   await initConnection();
-  const server=https.createServer(options, app).listen(3000);
+  const server=https.createServer(options, app).listen(3000, () => {
+    console.log('HTTPS server running on https://localhost:3000');
+  });
 
   // app.listen(port, () => {
   //   console.log(`Listen on port ${port}...`);
