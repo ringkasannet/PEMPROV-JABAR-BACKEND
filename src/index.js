@@ -14,16 +14,16 @@ app.use(cors());
 app.use('/', router);
 
 const options = {
-  key: fs.readFileSync('./key.pem'),
-  cert: fs.readFileSync('./cert.pem'),
-  passphrase: 'ringkasan.net'
+  key: fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/privkey.pem', 'utf8'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/cert.pem','utf8'),
+  ca : fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/chain.pem', 'utf8')
 };
 
 
 
 try {
   await initConnection();
-  const server=https.createServer(options, app).listen(3000, () => {
+  const server=https.createServer(options, app).listen(443, () => {
     console.log('HTTPS server running on https://localhost:3000');
   });
 
