@@ -8,8 +8,6 @@ const timeLog = (req, res, next) => {
   next();
 };
 
-router.use(timeLog);
-
 router.get("/", (req, res) => {
   res.send(`halaman root`);
 });
