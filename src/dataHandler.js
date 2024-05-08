@@ -44,6 +44,10 @@ export async function getSampleBUMD(){
   return [sampleBUMD1[0], sampleBUMD2[0], sampleBUMD3[0], sampleBUMD4[0], sampleBUMD5[0]]
 };
 
+export async function getBumdFromId(id){
+  const idObject = new ObjectId(String(id));
+  return  await collectionBUMD.find({ _id: idObject }).toArray();
+}
 async function processEmbeddingsFromBUMD(BUMDItem){
   console.log(`fungsi processEmbeddingsFromBUMD()`);
   const embedding = await embeddingOpenAI.embedding(BUMDItem.desc);
@@ -102,10 +106,10 @@ async function getMatchesDocsAndPinecone(topFive){
   };
 };
 
-async function matchQueryToPinecone(queryValue){ 
+async function matchQueryToPinecone(queryValue,num){ 
   console.log('fungsi matchQueryToPinecone()');
   const embeddedQuery = await embeddingQuery(queryValue);
-  const matchingResults = await pc.matchVectorQuery(embeddedQuery,5);
+  const matchingResults = await pc.matchVectorQuery(embeddedQuery,num);
   const bumdList = await getMatchesDocsAndPinecone(matchingResults);
   return bumdList;
 };
@@ -126,7 +130,7 @@ async function getQueryResults(queryValue, sources){ //TODO dihapus
   return queryResult;
 };
 
-export async function processQuery(queryValue){
+export async function processQuery(queryValue,model){
   console.log('fungsi processQuery()');
   console.log('query:', queryValue);
   // asli
@@ -138,18 +142,52 @@ export async function processQuery(queryValue){
 
   const sourcesList = matchingResults.map((document) => {
     return { 
-      id: document._id.toString(),
+      id: document._id.toString(), 
       name: document.name,
       desc: document.desc,
       perda: document.perda
     };
   });
-
-  const queryResult = await embeddingGemini.penjelasanPrompt(queryValue, sourcesList);
+  if (model === 'OpenAi'){
+    console.log('OpenAi model')
+  const queryResult = await embeddingOpenAI.penjelasanPrompt(queryValue, sourcesList);
   //array of promise
   console.log('queryResult:', queryResult);
   return queryResult;
+  } else {
+    console.log('GeminiAi model')
+    const queryResult = await embeddingGemini.penjelasanPrompt(queryValue, sourcesList);
+    console.log('queryResult:', queryResult);
+    return queryResult;
+  }
 };
+
+export async function getBUMDCandidate(queryValue,num=5){
+  console.log('fungsi processQuery()');
+  console.log('query:', queryValue);
+  // asli
+  const matchingResults = await matchQueryToPinecone(queryValue,num);
+  
+  // dummy
+  // const matchingResults = await getSampleBUMD();
+  console.log('matchingResults:', matchingResults);
+
+  const sourcesList = matchingResults.map((document) => {
+    return { 
+      id: document._id.toString(), 
+      name: document.name,
+      desc: document.desc,
+      perda: document.perda
+    };
+  });
+  return sourcesList;
+};
+
+export async function evaluasiBUMD(query,bumd){
+  console.log('fungsi evaluasiBUMD()');
+  const streamResult = await embeddingOpenAI.evaluasiBUMDPrompt(query, bumd);
+  return streamResult;
+}
 
 export async function removePropertyMongoDb(propertyName){
   collectionBUMD.updateMany({}, { $unset: { propertyName: '' } });

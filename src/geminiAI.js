@@ -97,7 +97,6 @@ export async function penjelasanPrompt(query, sources) {
       - Apakah domain pekerjaan masih dalam ruang lingkup yang sama/terkait
       - Apakah penugasan sesuai dengan proses bisnis perusahaan
       - Apakah penugasan tidak keluar terlalu jauh dari inti dasar pekerjaan yang dilakukan perusahaan saat ini
-    Dalam memberikan evaluasi, jangan dibagi ke dalam point seperti di atas, tapi rangkum menjadi satu kesatuan. 
     Berikan penjelasan secara lengkap dan jelas, serta berikan nomor pasal yang mendukung jawaban.
 
     Potensi penugasan: ${query}
