@@ -14,9 +14,9 @@ app.use(cors());
 app.use('/', router);
 
 const options = {
-  key: fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/privkey.pem', 'utf8'),
-  cert: fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/cert.pem','utf8'),
-  ca : fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/chain.pem', 'utf8')
+  key: fs.readFileSync('/etc/letsencrypt/live/ringkasan.net/privkey.pem', 'utf8'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/ringkasan.net/cert.pem','utf8'),
+  ca : fs.readFileSync('/etc/letsencrypt/live/ringkasan.net/chain.pem', 'utf8')
 };
 
 
