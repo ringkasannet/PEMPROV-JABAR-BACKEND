@@ -114,11 +114,17 @@ export async function evaluasiBUMDPrompt(query, bumd) {
     Berikan nomor perda dan nomor pasal yang mendukung jawaban.
     Nomor pasal wajib dicantumkan.
 
-    ========Output:======
-    ***Analisis Kesesuaian Penugasan dengan Tujuan BUMD***
+    ========Contoh Output1:======
+    ***Analisis Kesesuaian Penugasan Pengembangan Sarana Pendidikan dengan BUMD XYZ***
     ##Skor: 50%\n##
     ###Dasar Hukum: ${bumd.perda}###
-    Penugasan ... pada ...
+    Penugasan pengembangan sarana pendidikan pada BUMD XYZ memiliki kesesuaian yang ...
+
+    ========Contoh Output2:======
+    ***Analisis Kesesuaian Penugasan Pengelolaan Kemiskinan dengan BUMD XYZ***
+    ##Skor: 40%\n##
+    ###Dasar Hukum: ${bumd.perda}###
+    Penugasan pengelolaan kemiskinan pada BUMD XYZ memiliki kesesuaian yang ...
     `;
 
   const stream = await openai.chat.completions.create({
