@@ -116,7 +116,8 @@ export async function evaluasiBUMDPrompt(query, bumd) {
 
     ========Output:======
     ***Analisis Kesesuaian Penugasan dengan Tujuan BUMD***
-    A. Skor: 50%\n
+    ##Skor: 50%\n##
+    ###Dasar Hukum: Pasal 1 Perda No. 1 Tahun 2021###
     Penugasan ... pada ...
     `;
 
