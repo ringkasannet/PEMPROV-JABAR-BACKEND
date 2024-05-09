@@ -86,7 +86,7 @@ export async function penjelasanPrompt(query, sources) {
 }
 
 export async function evaluasiBUMDPrompt(query, bumd) {
-  console.log("fungsi evaluasiBUMDPrompt()", query, bumd);
+  console.log("fungsi evaluasiBUMDPrompt()", query, bumd.name);
 
   const prompt = `
     Tugas anda adalah menentukan kesesuaian potensi penugasan dari pemerintah daerah 

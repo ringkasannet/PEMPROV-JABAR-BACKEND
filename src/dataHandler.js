@@ -92,7 +92,7 @@ async function embeddingQuery(queryValue){
 };
 
 async function getMatchesDocsAndPinecone(topFive){
-  console.log('fungsi getMatchesDocsAndPinecone(), top five:',topFive);
+  console.log('getting data from mongodb for top five');
   const docId = topFive.map((idth) => {
     const id = new ObjectId(idth);
     return id;
@@ -138,7 +138,7 @@ export async function processQuery(queryValue,model){
   
   // dummy
   // const matchingResults = await getSampleBUMD();
-  console.log('matchingResults:', matchingResults);
+  console.log('matchingResults data:', matchingResults.map((document) => document.name));
 
   const sourcesList = matchingResults.map((document) => {
     return { 
@@ -170,7 +170,7 @@ export async function getBUMDCandidate(queryValue,num=5){
   
   // dummy
   // const matchingResults = await getSampleBUMD();
-  console.log('matchingResults:', matchingResults);
+  console.log('matchingResults:', matchingResults.map((document) => document.name));
 
   const sourcesList = matchingResults.map((document) => {
     return { 

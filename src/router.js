@@ -57,11 +57,11 @@ router.get("/getBUMDCandidate/:query/:num", async (req, res) => {
 
 router.get("/evaluasiBUMD/:bumdId/:query", async (req, res) => {
   // console.log(req.body)
-  // res.send(req.body)
+  // res.send(req.body)n
   try {
-    console.debug("in evaluasiBUMD, bumd:", req.params.bumdId, " query: ", req.params.query);
+    console.debug("in evaluasiBUMD, retrieving data from mongodb for bumd:", req.params.bumdId, " query: ", req.params.query);
     const bumd = await getBumdFromId(req.params.bumdId);
-    console.log("got bumd:", bumd);
+    console.log("got bumd:", bumd[0].name);
 
     const streamOpenAi = await evaluasiBUMD(req.params.query, bumd[0]);
 
