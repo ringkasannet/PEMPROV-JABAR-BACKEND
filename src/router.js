@@ -1,6 +1,7 @@
 import express from "express";
 import { getAllBUMD, processEmbeddings, processQuery, addPropertyMongoDb, getBUMDCandidate, evaluasiBUMD, getBumdFromId } from "./dataHandler.js";
-
+import { evaluasiBUMDPrompt as evaluasiBUMDPromptOpenAI } from "./openAI.js";
+import { evaluasiBUMDPrompt as evaluasiBUMDPromptGemini } from "./geminiAI.js";
 export const router = express.Router();
 
 const timeLog = (req, res, next) => {
@@ -55,7 +56,7 @@ router.get("/getBUMDCandidate/:query/:num", async (req, res) => {
   }
 });
 
-router.get("/evaluasiBUMD/:bumdId/:query", async (req, res) => {
+router.get("/evaluasiBUMD/:bumdId/:query/:model", async (req, res) => {
   // console.log(req.body)
   // res.send(req.body)n
   try {
@@ -63,22 +64,42 @@ router.get("/evaluasiBUMD/:bumdId/:query", async (req, res) => {
     const bumd = await getBumdFromId(req.params.bumdId);
     console.log("got bumd:", bumd[0].name);
 
-    const streamOpenAi = await evaluasiBUMD(req.params.query, bumd[0]);
-
-    for await (const chunk of streamOpenAi) {
-      // console.log(chunk.choices[0].delta.content);
-      // console.info("chunk.choices[0].delta.content");
-      if (chunk.choices[0].delta.content) {
-        res.write(chunk.choices[0].delta.content);
-        // res.write("halo");
-      } else {
-      }
+    switch (req.params.model) {
+      case "OpenAi":
+        const streamOpenAi = await evaluasiBUMD(req.params.query, bumd[0]);
+        for await (const chunk of streamOpenAi) {
+          if (chunk.choices[0].delta.content) {
+            res.write(chunk.choices[0].delta.content);
+          } else {
+          }
+        }
+        break;
+      case "GeminiAi":
+        const streamGemini = await evaluasiBUMDPromptGemini(req.params.query, bumd[0]);
+        for await (const chunk of streamGemini.stream) {
+          const chunkText = chunk.text();
+          res.write(chunkText);
+        }
+        break;
+      default:
+        break;
     }
-    // res.end("done");
+    // const streamOpenAi = await evaluasiBUMD(req.params.query, bumd[0]);
 
+    // for await (const chunk of streamOpenAi) {
+    //   // console.log(chunk.choices[0].delta.content);
+    //   // console.info("chunk.choices[0].delta.content");
+    //   if (chunk.choices[0].delta.content) {
+    //     res.write(chunk.choices[0].delta.content);
+    //     // res.write("halo");
+    //   } else {
+    //   }
+    // }
+    // res.end("done");
   } catch (error) {
-    console.error(error);
-    res.status(400).send("ditemukan error", error);
+    console.error("ditemukan error:",error);
+    if (req.params.model="GeminiAi") res.status(400).send({message:await error.message});
+    else res.status(400).send(error);
   }
 });
 router.get("/addProperty/:propName/:propValue", (req, res) => {

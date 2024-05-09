@@ -1,9 +1,11 @@
 import * as dotenv from 'dotenv';
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { createPrompt } from './prompt.js';
 
 dotenv.config();
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
+
 
 const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
 
@@ -224,3 +226,11 @@ export async function penjelasanPromptBulk(query, sources) {
 
   return jawaban;
 };
+
+export async function evaluasiBUMDPrompt(query, bumd){
+  console.log("fungsi evaluasiBUMDPrompt() di Gemini AI", query, bumd.name);
+  const prompt = createPrompt(query,bumd)
+  const stream = await model.generateContentStream(prompt);
+  return stream;
+
+}
