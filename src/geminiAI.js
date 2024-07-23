@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { createPrompt } from './prompt.js';
+import { createPrompt, asetPrompt, asetPromptDummy } from './prompt.js';
 
 dotenv.config();
 
@@ -232,5 +232,34 @@ export async function evaluasiBUMDPrompt(query, bumd){
   const prompt = createPrompt(query,bumd)
   const stream = await model.generateContentStream(prompt);
   return stream;
+};
 
-}
+export async function evaluasiAset(query, sources){
+  console.log('fungsi evaluasiAset()');
+
+  const promptPerSources = Promise.all(sources.map(async file => {
+    console.log(`prompt ${file.perda}`);
+    // console.log(file.desc);
+
+    // asli
+    const prompt = asetPrompt(query, file.desc);
+    // dummy
+    // const prompt = asetPromptDummy(query, file.desc);
+
+    const safe = {
+      "HARM_CATEGORY_HARASSMENT": "BLOCK_NONE",
+      "HARM_CATEGORY_HATE_SPEECH": "BLOCK_NONE",
+      "HARM_CATEGORY_SEXUALLY_EXPLICIT": "BLOCK_NONE",
+      "HARM_CATEGORY_DANGEROUS_CONTENT": "BLOCK_NONE",
+    };
+
+    const stream = await model.generateContentStream(prompt, safe);
+    // const stream = await model.generateContentStream(prompt);
+    const result = { id: file.id, penjelasan: stream };
+    // console.log(result);
+
+    return result;
+  }));
+
+  return await promptPerSources;
+};

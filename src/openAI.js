@@ -19,8 +19,7 @@ export async function embedding(input) {
   });
 
   return embedding.data[0].embedding;
-}
-
+};
 
 export async function evaluasiBUMDPrompt(query, bumd) {
   console.log("fungsi evaluasiBUMDPrompt() di OpenAI", query, bumd.name);
@@ -35,6 +34,5 @@ export async function evaluasiBUMDPrompt(query, bumd) {
     stream:true
   });
 
-
   return stream;
-}
+};

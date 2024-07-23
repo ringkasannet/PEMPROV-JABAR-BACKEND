@@ -4,7 +4,6 @@ import * as pc from './pinecone.js';
 import * as embeddingOpenAI from './openAI.js';
 import * as embeddingGemini from './geminiAI.js';
 
-
 export async function getAllBUMD(){
   try {
     console.log(`fungsi getAllBUMD()`);
@@ -47,7 +46,8 @@ export async function getSampleBUMD(){
 export async function getBumdFromId(id){
   const idObject = new ObjectId(String(id));
   return  await collectionBUMD.find({ _id: idObject }).toArray();
-}
+};
+
 async function processEmbeddingsFromBUMD(BUMDItem){
   console.log(`fungsi processEmbeddingsFromBUMD()`);
   const embedding = await embeddingOpenAI.embedding(BUMDItem.desc);

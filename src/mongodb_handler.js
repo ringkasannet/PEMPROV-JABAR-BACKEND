@@ -6,8 +6,10 @@ export let dbClient;
 
 const dbName = 'pemprov-jabar-bumd';
 const colNameBUMD = 'BUMD';
+const colNameAset = 'Asset';
 
 export let collectionBUMD = null;
+export let collectionAset = null;
 
 export async function checkConnection(){
   try {
@@ -34,6 +36,7 @@ export async function initConnection(){
     await dbClient.connect();
     await checkConnection();
     collectionBUMD = await dbClient.db(dbName).collection(colNameBUMD);
+    collectionAset = await dbClient.db(dbName).collection(colNameAset);
     return true;
   } catch (error) {
     console.log(error);

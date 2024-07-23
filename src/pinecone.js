@@ -6,27 +6,18 @@ const pc = new Pinecone({
 
 const index = pc.index('pemprovjabar');
 
-export async function updatevdb(vector){
-  await index.upsert(vector);
-}
+const pcAset = new Pinecone({
+  apiKey: '5a0aa56c-d5c6-4e21-8b28-0bb9d68174c7'
+});
+
+const indexAset = pcAset.index('aset');
 
 export async function upsertManyToPineCone(vectors){
   console.log('fungsi upsertManyToPineCone()');
-  const pineResult = await index.upsert(vectors);
-  console.log('pineResult:', pineResult);
+  await index.upsert(vectors);
 };
 
-// punten a masih pake loop jadul buat ngambil top 5 dari pinecone
-export async function getTopFive(response){
-  const topFive = [];
-  for(let i = 0; i < 5; i++){
-    topFive.push(response.matches[i].id);
-  };
-  
-  return topFive;
-};
-
-export async function matchVectorQuery(query,n){
+export async function matchVectorQuery(query, n){
   console.log('fungsi matchVectorQuery()');
   const queryResponse = await index.query({
     topK: n,
@@ -34,6 +25,31 @@ export async function matchVectorQuery(query,n){
     includeValues: true
   });
   
-  // const topFive = await getTopFive(queryresponse); //TODO remove
   return queryResponse.matches;
+};
+
+export async function upsertAsetToPineCone(vectors){
+  console.log('fungsi upsertAsetToPineCone()');
+  await indexAset.upsert(vectors);
+};
+
+export async function matchVectorAsetQuery(query, n){
+  console.log('fungsi matchVectorQuery()');
+  
+  const queryResponse = await indexAset.query({
+    topK: n,
+    vector: query,
+    includeMetadata: true,
+  });
+
+  const queryResponseID = queryResponse.matches.map(item => {
+    // console.log(item.metadata.perda, 'Bab', item.metadata.no_bab);
+    return item.id;
+  });
+  
+  return queryResponseID;
+};
+
+export async function removeAsetChunksFromPinecone(chunkID){
+  await indexAset.deleteMany(chunkID);
 };

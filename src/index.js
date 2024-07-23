@@ -19,8 +19,6 @@ app.use('/', router);
 //   ca : fs.readFileSync('/etc/letsencrypt/live/ringkasan.net/chain.pem', 'utf8')
 // };
 
-
-
 try {
   await initConnection();
   // const server=https.createServer(options, app).listen(443, () => {
