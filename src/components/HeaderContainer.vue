@@ -1,42 +1,83 @@
 <template>
-    <div id="header_container" class="horizontal_container">
-      <div id="logo_container"> 
-        <img src="/Logo Pemprov Jabar.png" alt="Logo"
-         style=
-          "max-width: 50px;
-           margin: 5px;">
-      </div>
-      <div id="tittle_logo" class="horizontal_container">
-        Pemerintah <br> Provinsi Jawa Barat
-      </div>
-      <div id="title_container" class="centered_text">
-        <h2 class="main_tittle">Pemetaan Fungsi BUMD Pemprov Jawa Barat</h2>
-      </div>
+    <div id="header_container">
+        <div class="logo_container">
+            <img src="/Logo Pemprov Jabar.png" alt="logo" class="logo_image">
+            <div class="tittle_logo">
+                <h2>
+                    <RouterLink to="/"> Pemerintah <br> Provinsi Jawa Barat </RouterLink>
+                </h2>
+            </div>
+        </div>
+        <div id="menu_container">
+            <div class="menu_item"><RouterLink to="/" class="set_low">Home</RouterLink></div>
+            <div class="menu_item"><RouterLink class="set_low">Admin</RouterLink></div>
+            <div class="menu_item"><RouterLink class="set_low">Document</RouterLink></div>
+            <div class="menu_item"><RouterLink class="set_low">Source Code</RouterLink></div>
+            <div class="menu_item">
+                <RouterLink class="set_low">
+                    Login
+                    <img class="login-icon" src="../assets/user.png" alt="user_icon">
+                </RouterLink>
+            </div>
+        </div>
     </div>
-  </template>
-  
+</template>
+
 <script setup>
 </script>
-  
-<style scoped>
-.main_tittle {
-    font-family: Helvetica;
-    font-weight: lighter;
-    margin: 15px;
+
+<style>
+#header_container {
+    display: flex;
+    width: 100vw;
+    padding: 10px 30px 0px 30px;
+    flex-wrap: wrap;
 }
-  
-.horizontal_container {
+
+.logo_container {
     display: flex;
     flex-direction: row;
 }
 
-.centered_text {
-    margin: 0 auto;
-}
-  
-#tittle_logo {
+.logo_image {
+    width: 50px;
+    height: 50px;
     margin: 10px;
 }
 
+.tittle_logo {
+
+}
+
+h2 {
+  font-weight: bolder;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#menu_container {
+    flex: 20;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.menu_item {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 10px;
+    margin: 0 25px;
+    font-weight: bolder;
+    font-size: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.set_low {
+    margin-top: auto;
+}
+
+.login-icon {
+    width: 15px;
+    height: 15px;
+    margin-top: 15px;
+}
 </style>
-  
