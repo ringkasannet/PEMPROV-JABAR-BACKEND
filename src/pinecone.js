@@ -1,10 +1,5 @@
 import { Pinecone } from '@pinecone-database/pinecone';
 
-const pc = new Pinecone({
-  apiKey: '6b96a466-044b-4593-804d-91d60ee89012'
-});
-
-const index = pc.index('pemprovjabar');
 
 
 
@@ -14,6 +9,12 @@ export async function upsertManyToPineCone(vectors){
 };
 
 export async function matchVectorQuery(query, n){
+  const pc = new Pinecone({
+    apiKey: '6b96a466-044b-4593-804d-91d60ee89012'
+  });
+  
+  const index = pc.index('pemprovjabar');
+  
   console.log('fungsi matchVectorQuery()');
   const queryResponse = await index.query({
     topK: n,
