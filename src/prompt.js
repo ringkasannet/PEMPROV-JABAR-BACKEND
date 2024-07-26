@@ -83,6 +83,7 @@ export function asetPrompt(query, sources){
   Tugas anda:
   - Melakukan identifikasi setiap pasal satu per satu pada dokumen hukum secara mendalam yang berkaitan dengan pertanyaan user.
   - Pastikan seluruh pasal yang relevan dijadikan bagian dari jawaban kendati pasal tersebut bersifat tidak langsung
+  - Tuliskan seluruh pasal terkait baik langsung maupun tidak langsung secara lengkap dan utuh sesuai dengan bunyi aslinya pada bagian DASAR HUKUM.
   - Memberikan penjelasan yang komprehensif dan argumentatif terhadap setiap pasal yang relevan dengan pertanyaan user.
   - Memberikan skor penilaian relevansi dokumen secara keseluruhan dengan pertanyaan user.
   
