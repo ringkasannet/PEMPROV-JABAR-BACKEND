@@ -30,10 +30,12 @@ export async function upsertAsetToPineCone(vectors){
 };
 
 export async function matchVectorAsetQuery(query, n){
+  console.log("preparing pinecone");
   const pcAset = new Pinecone({
     apiKey: '5a0aa56c-d5c6-4e21-8b28-0bb9d68174c7'
   });
   const indexAset = pcAset.index('aset');
+  console.log("pinecone prepared");
 
   
   console.log('fungsi matchVectorQuery()');
