@@ -9,9 +9,12 @@ export async function upsertManyToPineCone(vectors){
 };
 
 export async function matchVectorQuery(query, n){
+  console.log("preparing pinecone");
   const pc = new Pinecone({
     apiKey: '6b96a466-044b-4593-804d-91d60ee89012'
   });
+  console.log("pinecone prepared");
+
   
   const index = pc.index('pemprovjabar');
   
