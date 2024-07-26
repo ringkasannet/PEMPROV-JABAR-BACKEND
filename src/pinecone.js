@@ -35,7 +35,7 @@ export async function upsertAsetToPineCone(vectors){
 
 export async function matchVectorAsetQuery(query, n){
   console.log('fungsi matchVectorQuery()');
-  
+  console.log('getting asset matches from pinecone');
   const queryResponse = await indexAset.query({
     topK: n,
     vector: query,
