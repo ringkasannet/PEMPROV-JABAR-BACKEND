@@ -252,13 +252,17 @@ export async function evaluasiAset(query, sources){
       "HARM_CATEGORY_SEXUALLY_EXPLICIT": "BLOCK_NONE",
       "HARM_CATEGORY_DANGEROUS_CONTENT": "BLOCK_NONE",
     };
-
-    const stream = await model.generateContentStream(prompt, safe);
-    // const stream = await model.generateContentStream(prompt);
-    const result = { id: file.id, penjelasan: stream };
-    // console.log(result);
-
-    return result;
+    try {
+      const stream = await model.generateContentStream(prompt, safe);
+      // const stream = await model.generateContentStream(prompt);
+      const result = { id: file.id, penjelasan: stream };
+      // console.log(result);
+  
+      return result;
+  
+    }catch(error){
+      console.log(error);
+    }
   }));
 
   return await promptPerSources;
