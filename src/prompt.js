@@ -62,9 +62,9 @@ export function asetPrompt(query, sources){
   // console.log(sources);
   return `
 
-  Anda akan diberikan dokumen hukum beserta potensi kebutuhan.
+  Anda akan diberikan dokumen hukum beserta pertanyaan dari user terkait hukum pemanfaatan aset.
 
-  === POTENSI KEBUTUHAN ===
+  === PERTANYAAN USER ===
 
   ${query}
 
@@ -81,15 +81,12 @@ export function asetPrompt(query, sources){
   - Anda hanya diizinkan menjelaskan berdasarkan dokumen hukum yang diberikan.
 
   Tugas anda:
-  - Mengevaluasi dan menganalisis setiap pasal satu per satu pada dokumen hukum secara mendalam yang berkaitan dengan potensi kebutuhan.
-  - Memberikan skor persentase kemiripan/relevansi antara dokumen hukum dengan potensi kebutuhan.
-  - Menjelaskan penjabaran keterkaitan setiap pasal dengan potensi kebutuhan secara rinci, komprehensif, dan jelas.
-
-  === PERTIMBANGAN ANALISIS DOKUMEN HUKUM ===
-  - Apakah objek dan konteks dari potensi kebutuhan relevan dengan objek dan konteks pada dokumen hukum?
-  - Apa saja hak dan kewajiban hukum dari objek potensi kebutuhan?
-  - Apakah terdapat pasal yang saling bertentangan? Sebutkan jika terdapat pasal yang saling bertentangan dan sertakan penjelasannya.
-  - Berapa nilai objek pada potensi kebutuhan tersebut berdasarkan dokumen hukum yang berlaku?
+  - Melakukan identifikasi setiap pasal satu per satu pada dokumen hukum secara mendalam yang berkaitan dengan pertanyaan user.
+  - Pastikan seluruh pasal yang relevan dijadikan bagian dari jawaban kendati pasal tersebut bersifat tidak langsung
+  - Tuliskan seluruh pasal terkait baik langsung maupun tidak langsung secara lengkap dan utuh sesuai dengan bunyi aslinya pada bagian DASAR HUKUM.
+  - Memberikan penjelasan yang komprehensif dan argumentatif terhadap setiap pasal yang relevan dengan pertanyaan user.
+  - Memberikan skor penilaian relevansi dokumen secara keseluruhan dengan pertanyaan user.
+  
 
   === CATATAN ===
   - Gunakan bahasa yang baku dan formal dalam suatu paragraf, bukan dalam bentuk poin-poin.
@@ -99,10 +96,15 @@ export function asetPrompt(query, sources){
   === FORMAT JAWABAN ===
 
   ## Nomor Dokumen tentang Nama Dokumen ##
-  ## Skor: 90% ##
+  ## Dasar Hukum [pada catatan: bagian dasar hukum ini tuliskan pasal terkait yang menjadi bagian dari jawaban secara utuh dan penuh sesuai text asli]
+  - Pasal 1 ayat (1): Setiap kendaraan dinas yang tidak terpakai wajib dimanfaatkan.
+  - Pasal 2: Barang milik daerah yang tidak terpakai wajib dimanfaatkan.
   ### Penjelasan ###
   ...
+  ### Skor relevansi dokumen: 80% ###
 
+  === FORMAT JAWABAN APABILA DOKUMEN TIDAK RELEVAN DENGAN PERTANYAAN===
+  ### Dokumen tidak terkait dengan pertanyaan user ###
   === CONTOH PENJELASAN ===
 
   - Setiap pasal harus dijabarkan satu per satu.
@@ -148,14 +150,20 @@ export function asetPrompt(query, sources){
   Berikan penjelasan menggunakan format markdown seperti contoh di bawah.
 
   ## Perda 01/2000 tentang Pemanfaatan Barang Daerah ##
-  ## Skor: 90% ##
+  ## Dasar Hukum [pada catatan: bagian dasar hukum ini tuliskan pasal terkait yang menjadi bagian dari jawaban secara utuh dan penuh sesuai text asli]  - Pasal 1 ayat (1): Setiap kendaraan dinas yang tidak terpakai wajib dimanfaatkan.
+  - Pasal 2: Barang milik daerah yang tidak terpakai wajib dimanfaatkan.
+  catatan: sebutkan pasal per pasal secara lengkap yang mendukung jawaban anda, menggunakan kata-kata dan kalimat secara utuh sesuai dengan bunyi aslinya...
   ### Penjelasan ###
+  ### Skor relevansi dokumen: 80% ###
   ...
 
   ## Perda 02/1990 tentang Pengelolaan Aset ##
-  ## Skor: 10% ##
+  ## Dasar Hukum [pada catatan: bagian dasar hukum ini tuliskan pasal terkait yang menjadi bagian dari jawaban secara utuh dan penuh sesuai text asli]  - Pasal 1 ayat (1): Setiap kendaraan dinas yang tidak terpakai wajib dimanfaatkan.
+  - Pasal 2: Barang milik daerah yang tidak terpakai wajib dimanfaatkan.
+  catatan: sebutkan pasal per pasal secara lengkap yang mendukung jawaban anda, menggunakan kata-kata dan kalimat secara utuh sesuai dengan bunyi aslinya...
   ### Penjelasan ###
   ...
+  ### Skor relevansi dokumen: 80% ###
 
   `
 };
@@ -165,7 +173,7 @@ export function asetPromptDummy(query, sources){
   
   ===================================
 
-  anda akan diberikan sumber hukum dan kebutuhan dari pengguna.
+  anda akan diberikan sumber hukum dan pertanyaan dari pengguna.
 
   anda merupakan ahli hukum yang berfokus untuk mengevaluasi setiap pasal pada suatu sumber hukum.
   anda selalu merujuk kepada sumber hukum yang diberikan dalam memberikan penjelasan ke pengguna.
@@ -173,7 +181,6 @@ export function asetPromptDummy(query, sources){
   ===================================
   
   tugas anda adalah:
-  - memberikan skor kemiripan antara kebutuhan dengan sumber hukum.
   - menjawab query yang diberikan oleh user dengan mengacu kepada sumber hukum yang diberikan.
   - cantumkan nomor bab dan nomor pasal yang mendukung jawaban anda.
 
@@ -182,13 +189,16 @@ export function asetPromptDummy(query, sources){
   berikan jabawan menggunakan format markdown seperti contoh di bawah.
   
   ## Perda 1/1990 tentang Uang Khas Daerah
-  ## Skor: 90%
+
+  ## Dasar Hukum
+  ===sebutkan pasal per pasal yang mendukung jawaban anda, menggunakan kata-kata dan kalimat secara utuh sesuai dengan bunyi aslinya===
+
   ### Jawaban
   ...
 
   ===================================
 
-  potensi kebutuhan:
+  pertanyaan user:
   ${query}
 
   ===================================

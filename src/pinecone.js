@@ -1,8 +1,5 @@
 import { Pinecone } from '@pinecone-database/pinecone';
 
-const pc = new Pinecone({
-  apiKey: '6b96a466-044b-4593-804d-91d60ee89012'
-});
 
 const index = pc.index('pemprovjabar');
 const indexAset = pc.index('pemanfaatan-aset');
@@ -19,6 +16,15 @@ export async function upsertManyToPineCone(vectors){
 };
 
 export async function matchVectorQuery(query, n){
+  console.log("preparing pinecone");
+  const pc = new Pinecone({
+    apiKey: '6b96a466-044b-4593-804d-91d60ee89012'
+  });
+  console.log("pinecone prepared");
+
+  
+  const index = pc.index('pemprovjabar');
+  
   console.log('fungsi matchVectorQuery()');
   const queryResponse = await index.query({
     topK: n,
@@ -35,8 +41,17 @@ export async function upsertAsetToPineCone(vectors){
 };
 
 export async function matchVectorAsetQuery(query, n){
-  console.log('fungsi matchVectorQuery()');
+  console.log("preparing pinecone");
+  const pcAset = new Pinecone({
+    apiKey: '5a0aa56c-d5c6-4e21-8b28-0bb9d68174c7'
+  });
+  const indexAset = pcAset.index('aset');
+  console.log("pinecone prepared");
+
   
+  console.log('fungsi matchVectorQuery()');
+  console.log('getting asset matches from pinecone');
+  console.log(indexAset)
   const queryResponse = await indexAset.query({
     topK: n,
     vector: query,

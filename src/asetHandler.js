@@ -286,6 +286,28 @@ export async function getAsetCandidate(query, topK){
   return sourcesList;
 };
 
+
+export async function getAsetCandidateNotMerged(query, topK){
+  console.log('fungsi getAsetCandidate()');
+  // embeds query
+  const embeddedQuery = await embeddingOpenAI(query); 
+  // console.log(embeddedQuery);
+  
+  // cari similarity antara vector query dengan chunks pada pinecone vdb
+  const matchingResultsID = await matchVectorAsetQuery(embeddedQuery, topK);
+  // console.log(matchingResultsID);
+
+  // retrieve chunks dari mongo db berdasarkan id dari pinecone vdb
+  const chunkList = await retrieveChunkFromMongo(matchingResultsID);
+  // console.log(chunkList);
+  
+  // gabungkan setiap chunk berdasarkan dokumen/perda
+  // const sourcesList = mergeChunks(chunkList);
+  // console.log(sourcesList);
+
+  return chunkList;
+};
+
 export async function processAsetQuery(query, model, topK){
   console.log('fungsi processAsetQuery()');
 
@@ -298,8 +320,13 @@ export async function processAsetQuery(query, model, topK){
     console.log('using Open-AI LLM model');
   } else {
     console.log('using Gemini-AI LLM model');
-    queryResults = await evaluasiAset(query, sourcesList);
+    try{
+      queryResults = await evaluasiAset(query, sourcesList);
+      return queryResults;
+    }catch(error){
+      console.log(error);
+      return false;
+    }
   };
   
-  return queryResults;
 };
