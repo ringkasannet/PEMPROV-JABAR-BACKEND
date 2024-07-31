@@ -74,7 +74,7 @@ export async function processEmbeddings(){
   const arrayEmbeddings = await Promise.all(arrayEmbeddingsPromises);
   console.log(`embeddings results: ${arrayEmbeddings}`);
 
-  await pc.upsertManyToPinecone(arrayEmbeddings);
+  await pc.upsertManyToPineCone(arrayEmbeddings);
   const docId = arrayEmbeddings.map(embedding => {
     const id = new ObjectId(embedding.id);
     return id;

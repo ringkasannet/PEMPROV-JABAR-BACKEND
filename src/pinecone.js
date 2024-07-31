@@ -5,12 +5,13 @@ const pc = new Pinecone({
 });
 
 const index = pc.index('pemprovjabar');
+const indexAset = pc.index('pemanfaatan-aset');
 
-const pcAset = new Pinecone({
-  apiKey: '5a0aa56c-d5c6-4e21-8b28-0bb9d68174c7'
-});
+// const pcAset = new Pinecone({
+//   apiKey: '5a0aa56c-d5c6-4e21-8b28-0bb9d68174c7'
+// });
 
-const indexAset = pcAset.index('aset');
+// const indexAset = pcAset.index('aset');
 
 export async function upsertManyToPineCone(vectors){
   console.log('fungsi upsertManyToPineCone()');
