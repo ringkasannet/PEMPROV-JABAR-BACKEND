@@ -109,7 +109,7 @@ async function getMatchesDocsAndPinecone(topFive){
 async function matchQueryToPinecone(queryValue,num){ 
   console.log('fungsi matchQueryToPinecone()');
   const embeddedQuery = await embeddingQuery(queryValue);
-  const matchingResults = await pc.matchVectorQuery(embeddedQuery);
+  const matchingResults = await pc.matchVectorQuery(embeddedQuery,num);
   const bumdList = await getMatchesDocsAndPinecone(matchingResults);
   return bumdList;
 };
