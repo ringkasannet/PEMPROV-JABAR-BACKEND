@@ -37,9 +37,9 @@ router.get("/processEmbeddings", async (req, res) => {
 });
 
 router.get("/askQuestion/:query/:model", async (req, res) => {
-  console.log("halaman /askQuestion/:query:", req.params.query, req.params.model);
+  console.log("halaman /askQuestion/:query:", req.body.query, req.params.model);
   try {
-    const queryResults = await processQuery(req.params.query, req.params.model); //TODO sanitasi query
+    const queryResults = await processQuery(req.body.query, req.params.model); //TODO sanitasi query
     res.send(queryResults);
   } catch (error) {
     console.log(error);
@@ -47,28 +47,28 @@ router.get("/askQuestion/:query/:model", async (req, res) => {
   }
 });
 
-router.get("/getBUMDCandidate/:query/:num", async (req, res) => {
-  console.log("In /getBUMDCandidate query:", req.params.query, req.params.num);
+router.post("/getBUMDCandidate/:num", async (req, res) => {
+  console.log("In /getBUMDCandidate query:", req.body.query, req.params.num);
   try {
-    const queryResults = await getBUMDCandidate(req.params.query, Number(req.params.num)); //TODO sanitasi query
+    const queryResults = await getBUMDCandidate(req.body.query, Number(req.params.num)); //TODO sanitasi query
     res.send({ bumdCandidate: queryResults });
-  } catch (error) {
+  } catch (error) { 
     console.log(error);
     res.status(400).send(error);
   }
 });
 
-router.get("/evaluasiBUMD/:bumdId/:query/:model", async (req, res) => {
+router.post("/evaluasiBUMD/:bumdId/:model", async (req, res) => {
   // console.log(req.body)
   // res.send(req.body)n
   try {
-    console.debug("in evaluasiBUMD, retrieving data from mongodb for bumd:", req.params.bumdId, " query: ", req.params.query);
+    console.debug("in evaluasiBUMD, retrieving data from mongodb for bumd:", req.params.bumdId, " query: ", req.body.query);
     const bumd = await getBumdFromId(req.params.bumdId);
     console.log("got bumd:", bumd[0].name);
 
     switch (req.params.model) {
       case "OpenAi":
-        const streamOpenAi = await evaluasiBUMD(req.params.query, bumd[0]);
+        const streamOpenAi = await evaluasiBUMD(req.body.query, bumd[0]);
         for await (const chunk of streamOpenAi) {
           if (chunk.choices[0].delta.content) {
             res.write(chunk.choices[0].delta.content);
@@ -77,7 +77,7 @@ router.get("/evaluasiBUMD/:bumdId/:query/:model", async (req, res) => {
         }
         break;
       case "GeminiAi":
-        const streamGemini = await evaluasiBUMDPromptGemini(req.params.query, bumd[0]);
+        const streamGemini = await evaluasiBUMDPromptGemini(req.body.query, bumd[0]);
         for await (const chunk of streamGemini.stream) {
           const chunkText = chunk.text();
           res.write(chunkText);
@@ -290,10 +290,10 @@ router.get("/processAsetEmbeddings", async (req, res) => {
   }
 });
 
-router.get("/getAsetCandidate/:query/:topK", async (req, res) => {
+router.post("/getAsetCandidate/:topK", async (req, res) => {
   console.log("halaman getAsetCandidate");
 
-  const query = req.params.query;
+  const query = req.body.query;
   const topK = parseInt(req.params.topK);
 
   try {
@@ -308,13 +308,13 @@ router.get("/getAsetCandidate/:query/:topK", async (req, res) => {
   }
 });
 
-router.get("/asetQA/:query/:model/:topK", async (req, res) => {
+router.post("/asetQA/:model/:topK", async (req, res) => {
   console.log("halaman asetQA");
 
-  const query = req.params.query;
   const model = req.params.model;
   const topK = parseInt(req.params.topK);
-
+  console.log(req.body);
+  const query=req.body.query
   try {
     const queryResult = await processAsetQuery(query, model, topK);
     if (!queryResult) {
