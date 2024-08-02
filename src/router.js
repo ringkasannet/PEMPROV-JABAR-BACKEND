@@ -1,6 +1,6 @@
 import express from "express";
-import { getAllBUMD, processEmbeddings, processQuery, addPropertyMongoDb, getBUMDCandidate, evaluasiBUMD, getBumdFromId } from "./dataHandler.js";
-import { uploadAsetChunksToMongo, removePerdaChunks, getAllAset, processAsetEmbeddings, getAsetCandidate, processAsetQuery } from "./asetHandler.js";
+import { getAllBUMD, processEmbeddings, processQuery, addPropertyMongoDb, getBUMDCandidate, evaluasiBUMD, getBumdFromId, inputDataBUMDObject, removeSelectedBUMD } from "./dataHandler.js";
+import { uploadAsetChunksToMongo, removePerdaChunks, getAllAset, processAsetEmbeddings, getAsetCandidate, processAsetQuery, inputDataAsetObject, removeSelectedAsetChunks } from "./asetHandler.js";
 import { evaluasiBUMDPrompt as evaluasiBUMDPromptOpenAI } from "./openAI.js";
 import { evaluasiBUMDPrompt as evaluasiBUMDPromptGemini } from "./geminiAI.js";
 
@@ -350,4 +350,52 @@ router.post("/asetQA/:model/:topK", async (req, res) => {
   }
 
   // res.status(400).send(new Error('coba error'));
+});
+
+// input BUMD
+router.post("/admin/inputBUMD", async (req, res) => {
+  console.log('halaman /admin/inputBUMD');
+
+  const dataInput = req.body;
+  // console.log(dataInput);
+
+  await inputDataBUMDObject(dataInput);
+
+  res.send('done');
+});
+
+// hapus BUMD
+router.post("/admin/removeSelectedBUMD", async (req, res) => {
+  console.log("halaman /admin/removeSelectedBUMD");
+  
+  const chunksID = req.body;
+  // console.log(chunksID);
+
+  await removeSelectedBUMD(chunksID);
+
+  res.send('done');
+});
+
+// input Aset
+router.post("/admin/inputAset", async (req, res) => {
+  console.log("halaman /admin/inputAset");
+
+  const dataInput = req.body;
+  // console.log(dataInput);
+
+  await inputDataAsetObject(dataInput);
+  
+  res.send('done');
+});
+
+// hapus Aset chunk
+router.post("/admin/removeSelectedAsetChunks", async (req, res) => {
+  console.log("halaman /admin/removeSelectedAsetChunks");
+  
+  const chunksID = req.body;
+  // console.log(chunksID);
+
+  await removeSelectedAsetChunks(chunksID);
+
+  res.send('done');
 });

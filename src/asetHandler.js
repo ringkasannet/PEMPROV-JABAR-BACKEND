@@ -320,13 +320,97 @@ export async function processAsetQuery(query, model, topK){
     console.log('using Open-AI LLM model');
   } else {
     console.log('using Gemini-AI LLM model');
-    try{
+    try {
       queryResults = await evaluasiAset(query, sourcesList);
       return queryResults;
-    }catch(error){
+    } catch (error){
       console.log(error);
       return false;
-    }
+    };
+  };
+};
+
+export async function inputDataAsetObject(objInput){
+  console.log('fungsi inputDataAsetObject()');
+  
+  let jenis = '';
+
+  if (objInput.jenis === 'Peraturan Gubernur'){
+    jenis = 'Pergub';
+  } else if (objInput.jenis === 'Peraturan Daerah'){
+    jenis = 'Perda';
+  };
+
+  const perda = `${jenis} ${objInput.nomor.toString()}/${objInput.tahun}`
+  // console.log('nama perda:', perda);
+
+  let desc = '';
+  
+  if(objInput.no_bagian !== ''){
+    desc += 'Bagian ' + objInput.no_bagian.toString() + '\n' + objInput.nama_bagian + '\n\n';
+  };
+
+  if(objInput.no_paragraf !== ''){
+    desc += 'Paragraf ' + objInput.no_paragraf + '\n' + objInput.nama_paragraf + '\n\n';
   };
   
+  desc += objInput.desc;
+
+  const data = {
+    _id: new ObjectId(),
+    name: objInput.nama,
+    perda: perda,
+    no_bab: objInput.no_bab.toString(),
+    nama_bab: objInput.nama_bab,
+    desc: desc,
+  };
+  // console.log(data);
+  
+  // upload chunks ke mongo db
+  console.log(`uploads ${perda} chunk to mongodb...`);
+  await collectionAset.insertOne(data);
+
+  // embed desc
+  const vectorDesc = await embeddingOpenAI(data.desc);
+  // console.log(vectorDesc);
+
+  const embeddedData = [
+    {
+      id: data._id.toString(),
+      values: vectorDesc,
+      metadata: {
+        name: data.name,
+        perda: data.perda,
+        no_bab: data.no_bab,
+      },
+    },
+  ];
+  // console.log(embeddedData);
+
+  // upload chunks ke pinecone vdb
+  console.log(`uploads ${perda} chunk vector to pinecone vdb...`);
+  await upsertAsetToPineCone(embeddedData);
+};
+
+export async function removeSelectedAsetChunks(chunksID){
+  console.log('fungsi removeSelectedAsetChunks()');
+  // console.log(chunksID);
+  
+  if(chunksID.length !== 0){
+    // hapus chunks terpilih pada pinecone vdb
+    await removeAsetChunksFromPinecone(chunksID);
+    console.log('removes selected chunks from pinecone vdb...');
+
+    // hapus chunks terpilih pada mongodb
+    const chunksMongoID = chunksID.map(id => {
+      return new ObjectId(String(id));
+    });
+    // console.log(chunksMongoID);
+
+    await collectionAset.deleteMany({ _id: { $in: chunksMongoID } });
+    console.log('removes selected chunks from mongodb...');
+
+  } else {
+    console.log('please select chunks...');
+  };
 };

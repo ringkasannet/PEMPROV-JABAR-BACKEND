@@ -196,3 +196,81 @@ export async function removePropertyMongoDb(propertyName){
 export async function addPropertyMongoDb(propertyName, propertyValue){
   collectionBUMD.updateMany({}, { $set: { propertyName: propertyValue } });
 };
+
+export async function inputDataBUMDObject(objInput){
+  console.log('fungsi inputDataBUMDObject()');
+  // console.log(objInput);
+
+  let jenis = '';
+
+  if (objInput.jenis === 'Peraturan Gubernur'){
+    jenis = 'Pergub';
+  } else if (objInput.jenis === 'Peraturan Daerah'){
+    jenis = 'Perda';
+  };
+
+  const perda = `${jenis} ${objInput.nomor.toString()}/${objInput.tahun}`
+  // console.log('nama perda:', perda);
+
+  const desc = '# BUMD ' + objInput.name + '\n\n' +
+    '## Dasar Hukum\n\n' +
+    '** Tujuan Pendirian **:\n' + objInput.tujuan + '\n\n' +
+    '** Ruang Lingkup Usaha **:\n' + objInput.ruang_lingkup;
+  // console.log(desc);
+
+  const data = {
+    _id: new ObjectId(),
+    name: objInput.name,
+    desc: desc,
+    perda: perda,
+    propertyName: 'true',
+  };
+  // console.log(data);
+  
+  // upload chunks ke mongo db
+  console.log(`uploads ${perda} to mongodb...`);
+  await collectionBUMD.insertOne(data);
+
+  // embed desc
+  const vectorDesc = await embeddingOpenAI.embedding(data.desc);
+  // console.log(vectorDesc);
+
+  const embeddedData = [
+    {
+      id: data._id.toString(),
+      values: vectorDesc,
+      metadata: {
+        name: data.name,
+        perda: data.perda,
+      },
+    },
+  ];
+  // console.log(embeddedData);
+
+  // upload chunks ke pinecone vdb
+  console.log(`uploads ${perda} chunk vector to pinecone vdb...`);
+  await pc.upsertManyToPineCone(embeddedData);
+};
+
+export async function removeSelectedBUMD(chunksID){
+  console.log('fungsi removeSelectedBUMD()');
+  // console.log(chunksID);
+  
+  if(chunksID.length !== 0){
+    // hapus chunks terpilih pada pinecone vdb
+    await pc.removeBUMDFromPinecone(chunksID);
+    console.log('removes selected BUMD from pinecone vdb...');
+
+    // hapus chunks terpilih pada mongodb
+    const chunksMongoID = chunksID.map(id => {
+      return new ObjectId(String(id));
+    });
+    // console.log(chunksMongoID);
+
+    await collectionBUMD.deleteMany({ _id: { $in: chunksMongoID } });
+    console.log('removes selected BUMD from mongodb...');
+
+  } else {
+    console.log('please select chunks...');
+  };
+};
