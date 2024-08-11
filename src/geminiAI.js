@@ -6,7 +6,6 @@ dotenv.config();
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 
-
 const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
 
 export async function queryAnalysis(query) {
@@ -252,6 +251,7 @@ export async function evaluasiAset(query, sources){
       "HARM_CATEGORY_SEXUALLY_EXPLICIT": "BLOCK_NONE",
       "HARM_CATEGORY_DANGEROUS_CONTENT": "BLOCK_NONE",
     };
+
     try {
       const stream = await model.generateContentStream(prompt, safe);
       // const stream = await model.generateContentStream(prompt);
@@ -259,10 +259,9 @@ export async function evaluasiAset(query, sources){
       // console.log(result);
   
       return result;
-  
     }catch(error){
       console.log(error);
-    }
+    };
   }));
 
   return await promptPerSources;

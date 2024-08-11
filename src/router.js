@@ -60,7 +60,7 @@ router.post("/getBUMDCandidate/:num", async (req, res) => {
 
 router.post("/evaluasiBUMD/:bumdId/:model", async (req, res) => {
   // console.log(req.body)
-  // res.send(req.body)n
+  // res.send(req.body)
   try {
     console.debug("in evaluasiBUMD, retrieving data from mongodb for bumd:", req.params.bumdId, " query: ", req.body.query);
     const bumd = await getBumdFromId(req.params.bumdId);
@@ -314,13 +314,15 @@ router.post("/asetQA/:model/:topK", async (req, res) => {
   const model = req.params.model;
   const topK = parseInt(req.params.topK);
   console.log(req.body);
-  const query=req.body.query
+  const query = req.body.query;
+  
   try {
     const queryResult = await processAsetQuery(query, model, topK);
     if (!queryResult) {
       res.status(400).send("Internal error processing LLM request");
       return;
     }
+
     queryResult.map(async (itemStream) => {
       try {
         for await (const chunk of itemStream.penjelasan.stream) {

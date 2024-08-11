@@ -5,8 +5,12 @@ const uri = 'mongodb+srv://ringkasannet:lp1POBCzo98wlAYK@pemprov-jabar.cd5e79l.m
 export let dbClient;
 
 const dbName = 'pemprov-jabar-bumd';
+// asli
 const colNameBUMD = 'BUMD';
 const colNameAset = 'Asset';
+// dummy
+// const colNameBUMD = 'test-bumd';
+// const colNameAset = 'test-aset';
 
 export let collectionBUMD = null;
 export let collectionAset = null;

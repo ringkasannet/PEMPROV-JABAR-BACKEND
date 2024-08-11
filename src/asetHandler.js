@@ -286,9 +286,8 @@ export async function getAsetCandidate(query, topK){
   return sourcesList;
 };
 
-
 export async function getAsetCandidateNotMerged(query, topK){
-  console.log('fungsi getAsetCandidate()');
+  console.log('fungsi getAsetCandidateNotMerged()');
   // embeds query
   const embeddedQuery = await embeddingOpenAI(query); 
   // console.log(embeddedQuery);
@@ -347,11 +346,7 @@ export async function inputDataAsetObject(objInput){
   let desc = '';
   
   if(objInput.no_bagian !== ''){
-    desc += 'Bagian ' + objInput.no_bagian.toString() + '\n' + objInput.nama_bagian + '\n\n';
-  };
-
-  if(objInput.no_paragraf !== ''){
-    desc += 'Paragraf ' + objInput.no_paragraf + '\n' + objInput.nama_paragraf + '\n\n';
+    desc += 'BAGIAN ' + objInput.no_bagian.toString() + '\n' + objInput.nama_bagian + '\n\n';
   };
   
   desc += objInput.desc;

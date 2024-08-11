@@ -86,7 +86,6 @@ export function asetPrompt(query, sources){
   - Tuliskan seluruh pasal terkait baik langsung maupun tidak langsung secara lengkap dan utuh sesuai dengan bunyi aslinya pada bagian DASAR HUKUM.
   - Memberikan penjelasan yang komprehensif dan argumentatif terhadap setiap pasal yang relevan dengan pertanyaan user.
   - Memberikan skor penilaian relevansi dokumen secara keseluruhan dengan pertanyaan user.
-  
 
   === CATATAN ===
   - Gunakan bahasa yang baku dan formal dalam suatu paragraf, bukan dalam bentuk poin-poin.
@@ -103,7 +102,7 @@ export function asetPrompt(query, sources){
   ...
   ### Skor relevansi dokumen: 80% ###
 
-  === FORMAT JAWABAN APABILA DOKUMEN TIDAK RELEVAN DENGAN PERTANYAAN===
+  === FORMAT JAWABAN APABILA DOKUMEN TIDAK RELEVAN DENGAN PERTANYAAN ===
   ### Dokumen tidak terkait dengan pertanyaan user ###
   === CONTOH PENJELASAN ===
 
@@ -141,7 +140,6 @@ export function asetPrompt(query, sources){
     [BENAR]
     Perda No. 6 Tahun 2008 mengatur tentang pengelolaan barang milik daerah yang mana objek pada Perda ini adalah hasil kerja sama penyediaan infrastruktur (KSPI). Selain itu, siklus logistik pengelolaan barang milik daerah meliputi perencanaan, pengadaan, penggunaan, penatausahaan, pemanfaatan, penghapusan, dan pemindahtanganan, yang merupakan aspek-aspek penting dalam tata kelola KSPI.
 
-
   - Jika tidak ada pasal yang bertentangan, anda tidak perlu memberikan penjelasan.
     [SALAH] Pasal yang Saling Bertentangan Tidak terdapat pasal yang saling bertentangan dalam Pergub 78/2014.
   
@@ -154,6 +152,7 @@ export function asetPrompt(query, sources){
   - Pasal 2: Barang milik daerah yang tidak terpakai wajib dimanfaatkan.
   catatan: sebutkan pasal per pasal secara lengkap yang mendukung jawaban anda, menggunakan kata-kata dan kalimat secara utuh sesuai dengan bunyi aslinya...
   ### Penjelasan ###
+  ...
   ### Skor relevansi dokumen: 80% ###
   ...
 
