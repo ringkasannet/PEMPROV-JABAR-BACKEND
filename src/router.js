@@ -3,7 +3,7 @@ import { getAllBUMD, processEmbeddings, processQuery, addPropertyMongoDb, getBUM
 import { uploadAsetChunksToMongo, removePerdaChunks, getAllAset, processAsetEmbeddings, getAsetCandidate, processAsetQuery, inputDataAsetObject, removeSelectedAsetChunks } from "./asetHandler.js";
 import { evaluasiBUMDPrompt as evaluasiBUMDPromptOpenAI } from "./openAI.js";
 import { evaluasiBUMDPrompt as evaluasiBUMDPromptGemini } from "./geminiAI.js";
-import { getAllBUMDVector, getAllAsetVector, removeAsetChunksFromPinecone } from "./pinecone.js";
+import { getAllBUMDVector, getAllAsetVector } from "./pinecone.js";
 
 export const router = express.Router();
 
