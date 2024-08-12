@@ -3,6 +3,7 @@ import { getAllBUMD, processEmbeddings, processQuery, addPropertyMongoDb, getBUM
 import { uploadAsetChunksToMongo, removePerdaChunks, getAllAset, processAsetEmbeddings, getAsetCandidate, processAsetQuery, inputDataAsetObject, removeSelectedAsetChunks } from "./asetHandler.js";
 import { evaluasiBUMDPrompt as evaluasiBUMDPromptOpenAI } from "./openAI.js";
 import { evaluasiBUMDPrompt as evaluasiBUMDPromptGemini } from "./geminiAI.js";
+import { getAllBUMDVector, getAllAsetVector, removeAsetChunksFromPinecone } from "./pinecone.js";
 
 export const router = express.Router();
 
@@ -400,4 +401,68 @@ router.post("/admin/removeSelectedAsetChunks", async (req, res) => {
   await removeSelectedAsetChunks(chunksID);
 
   res.send('done');
+});
+
+router.get("/getAllBUMDID", async (req, res) => {
+  console.log(`halaman getAllBUMDID`);
+  const listBUMD = await getAllBUMD();
+  const listBUMDID = listBUMD.map(item => {
+    return item._id;
+  });
+  res.send(listBUMDID);
+});
+
+router.get("/getAllBUMDVector", async (req, res) => {
+  console.log('halaman getAllBUMDVector');
+  try {
+    const result = await getAllBUMDVector();
+    res.send(result);
+  } catch (error) {
+    res.send(error.message)
+  };
+});
+
+router.get("/getAllBUMDVectorID", async (req, res) => {
+  console.log('halaman getAllBUMDVectorID');
+  try {
+    const result = await getAllBUMDVector();
+    const resultID = result.matches.map(item => {
+      return item.id;
+    })
+    res.send(resultID);
+  } catch (error) {
+    res.send(error.message)
+  };
+});
+
+router.get("/getAllAsetID", async (req, res) => {
+  console.log(`halaman getAllAsetID`);
+  const listAset = await getAllAset();
+  const listAsetID = listAset.map(item => {
+    return item._id;
+  });
+  res.send(listAsetID);
+});
+
+router.get("/getAllAsetVector", async (req, res) => {
+  console.log('halaman getAllAsetVector');
+  try {
+    const result = await getAllAsetVector();
+    res.send(result);
+  } catch (error) {
+    res.send(error.message);
+  };
+});
+
+router.get("/getAllAsetVectorID", async (req, res) => {
+  console.log('halaman getAllAsetVectorID');
+  try {
+    const result = await getAllAsetVector();
+    const resultID = result.matches.map(item => {
+      return item.id;
+    })
+    res.send(resultID);
+  } catch (error) {
+    res.send(error.message)
+  };
 });

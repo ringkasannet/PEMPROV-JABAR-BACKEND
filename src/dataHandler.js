@@ -212,7 +212,7 @@ export async function inputDataBUMDObject(objInput){
   const perda = `${jenis} ${objInput.nomor.toString()}/${objInput.tahun}`
   // console.log('nama perda:', perda);
 
-  const desc = '# BUMD ' + objInput.name + '\n\n' +
+  const desc = '## BUMD ' + objInput.name + '\n\n' +
     '## Dasar Hukum\n\n' +
     '** Tujuan Pendirian **:\n' + objInput.tujuan + '\n\n' +
     '** Ruang Lingkup Usaha **:\n' + objInput.ruang_lingkup;
@@ -224,6 +224,7 @@ export async function inputDataBUMDObject(objInput){
     desc: desc,
     perda: perda,
     propertyName: 'true',
+    embedding: true,
   };
   // console.log(data);
   

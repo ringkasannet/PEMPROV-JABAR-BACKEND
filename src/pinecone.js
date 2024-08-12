@@ -1,4 +1,5 @@
 import { Pinecone } from '@pinecone-database/pinecone';
+import { embedding } from './openAI.js';
 
 // ringkasan net account
 const pc = new Pinecone({
@@ -59,4 +60,32 @@ export async function matchVectorAsetQuery(query, n){
 
 export async function removeAsetChunksFromPinecone(chunkID){
   await indexAset.deleteMany(chunkID);
+};
+
+export async function getAllBUMDVector(){
+  const status = await index.describeIndexStats();
+  console.log(status);
+
+  const query = await embedding('query');
+  const queryResponse = await index.query({
+    topK: status.totalRecordCount + 1,
+    vector: query,
+    includeValues: true,
+    includeMetadata: true,
+  });
+  return queryResponse;
+};
+
+export async function getAllAsetVector(){
+  const status = await indexAset.describeIndexStats();
+  console.log(status);
+
+  const query = await embedding('query');
+  const queryResponse = await indexAset.query({
+    topK: status.totalRecordCount + 1,
+    vector: query,
+    includeValues: true,
+    includeMetadata: true,
+  });
+  return queryResponse;
 };

@@ -358,6 +358,7 @@ export async function inputDataAsetObject(objInput){
     no_bab: objInput.no_bab.toString(),
     nama_bab: objInput.nama_bab,
     desc: desc,
+    embedding: true,
   };
   // console.log(data);
   
