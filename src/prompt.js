@@ -211,7 +211,7 @@ export function asetPromptDummy(query, sources){
 };
 
 // nomor peraturan, tahun, nama PT
-export function extractBUMDInfo(){
+export function getBUMDInfoPrompt(){
   return `
   anda merupakan seorang ahli pengarsipan dokumen hukum.
   
@@ -266,19 +266,18 @@ export function extractBUMDInfo(){
 };
 
 
-export function extractBUMDContent(){
+export function getBUMDDescPrompt(){
   return `
-  dari peraturan daerah terlampir, identifikasi BUMD yang diatur serta ekstraksi semua pasal dan ayat terkait dengan tujuan pendirian dan lingkup bisnis BUMD tersebut. Jangan ada pasal atau ayat yang tertinggal. Pastikan setiap kata dalam pasal/ayat sama percis dengan dokumen, jangan rubah sedikit pun.
+  Anda adalah seorang ahli hukum tata negara yang berfokus pada analisis hukum terhadap peraturan daerah yang mengatur tentang pendirian BUMD.
+  Tugas anda adalah mengidentifikasi ruang tujuan pendirian dan ruang lingkup usaha BUMD. 
+  Dari peraturan daerah terlampir, ekstraksi semua pasal dan ayat yang menjelaskan tujuan pendirian dan lingkup bisnis BUMD tersebut. 
+  Jangan ada pasal atau ayat yang tertinggal. 
+  Pastikan setiap kata dalam pasal/ayat sama percis dengan dokumen, jangan rubah sedikit pun.
+  Berikan alasan anda memasukan pasal yang anda ekstraksi apakah pasal tersebut  menjelaskan tujuan pendirian dan ruang lingkup BUMD. Jangan masukan pasal yang tidak menjelaskan tujuan atau ruang lingkup usaha BUMD
 
-  berikan jawaban dalam format berikut:
+  berikan jawaban dalam format JSON berikut:
   
-  BUMD ....
-  Tujuan Pendirian dan Ruang Lingkup Usaha: (berikan ringkasan secara lengkap)
-  Dasar Hukum: 
-  Nama Peraturan Daerah 
-  Pasal xxxx .... (ekstraksi teks secara lengkap tanpa merubah sedikitkpun)
-  Pasal ...
-  Pasal ...
+  {pasal:[{pasal 1:"isi pasal ...", alasan:"alasan ekstraksi pasal 1"},{pasal 2:"isi pasal ...", alasan:"alasan ekstraksi pasal 2"}]}
   
 
   `;

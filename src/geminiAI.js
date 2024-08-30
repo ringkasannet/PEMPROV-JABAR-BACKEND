@@ -1,20 +1,59 @@
-import * as dotenv from 'dotenv';
+import * as dotenv from "dotenv";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { createPrompt, asetPrompt, asetPromptDummy, extractBUMDInfo, extractBUMDContent } from './prompt.js';
+import { GoogleAIFileManager } from '@google/generative-ai/server';
+
+import {
+  createPrompt,
+  asetPrompt,
+  asetPromptDummy,
+} from "./prompt.js";
 
 dotenv.config();
+const fileManager = new GoogleAIFileManager(process.env.GOOGLE_API_KEY);
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 
-const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
-const modelExtractor = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+const modelExtractor = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 const modelExtractorJSON = genAI.getGenerativeModel({
-  model: 'gemini-1.5-flash',
+  model: "gemini-1.5-flash",
   generationConfig: { responseMimeType: "application/json" },
 });
 
+
+export async function uploadToGemini(pdfPath){
+  console.log(`upload "${pdfPath}" to Gemini ...`);
+
+  const uploadFile = await fileManager.uploadFile(pdfPath, {
+    mimeType: 'application/pdf',
+    displayName: pdfPath,
+  });
+
+  const file = uploadFile.file;
+  // console.log(`'${file.displayName}' as '${file.name}' was uploaded`);
+
+  return file;
+};
+
+export async function checkActiveFiles(pdf){
+  console.log(`check if file is ready to use or not ...`);
+  console.log(pdf);
+  let file = await fileManager.getFile(pdf.name);
+  
+  while (file.state === 'PROCESSING'){
+    process.stdout.write('.');
+    await new Promise((resolve) => setTimeout(resolve, 10_000));
+    file = await fileManager.getFile(pdf.name);
+  };
+
+  if (file.state !== 'ACTIVE'){
+    throw Error(`${file.displayName} failed to process`);
+  };
+
+  console.log('all files ready to process!');
+};
 export async function queryAnalysis(query) {
-  console.log('fungsi queryAnalysis()')
+  console.log("fungsi queryAnalysis()");
 
   const prompt = `
   Anda akan diberikan query.
@@ -42,18 +81,19 @@ export async function queryAnalysis(query) {
     return await JSON.parse(jawaban);
   } catch (error) {
     // console.log(error);
-    console.log('queryAnalysis() return a non-valid JSON format!');
+    console.log("queryAnalysis() return a non-valid JSON format!");
     return {
-      jenis: "penjabaran"
+      jenis: "penjabaran",
     };
-  };
-};
+  }
+}
 
 export async function penjabaranPrompt(query, sources) {
-  console.log('fungsi penjabaranPrompt()');
+  console.log("fungsi penjabaranPrompt()");
 
-  const promptsPerSource = Promise.all(sources.map(async (s) => {
-    const prompt = `
+  const promptsPerSource = Promise.all(
+    sources.map(async (s) => {
+      const prompt = `
     Anda akan diberikan pertanyaan dan beberapa dokumen hukum.
     
     Pertanyaan: ${query}
@@ -78,22 +118,24 @@ export async function penjabaranPrompt(query, sources) {
     ** Penjelasan **: Jawaban secara lengkap\n
     `;
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const jawaban = response.text();
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const jawaban = response.text();
 
-    return jawaban;
-  }));
+      return jawaban;
+    }),
+  );
 
   return await promptsPerSource;
-};
+}
 
 export async function penjelasanPrompt(query, sources) {
-  console.log('fungsi penjelasanPrompt()');
+  console.log("fungsi penjelasanPrompt()");
 
   //query: penugasan pembangunan fasilitas air bersih
-  const promptsPerSource = Promise.all(sources.map(async (s) => {
-    const prompt = `
+  const promptsPerSource = Promise.all(
+    sources.map(async (s) => {
+      const prompt = `
     Tugas anda adalah menentukan kesesuaian potensi penugasan dari pemerintah daerah 
     dengan tujuan pendirian perusahaan BUMD berdasarkan sumber dokumen hukum terlampir. 
     Dari setiap potensi penugasan, berikan:
@@ -125,27 +167,28 @@ export async function penjelasanPrompt(query, sources) {
     D. Penjelasan: Jawaban secara lengkap\n ====
     `;
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const jawaban = response.text(); // asli
-    // const jawaban = '** skor **: 50% \n ini penjelasan dari Gemini API'; // dummy
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      const jawaban = response.text(); // asli
+      // const jawaban = '** skor **: 50% \n ini penjelasan dari Gemini API'; // dummy
 
-    const arrayQueryResult = {
-      "_id": s.id,
-      "name": s.name,
-      "desc": s.desc,
-      "perda": s.perda,
-      "penjelasan": jawaban,
-    };
+      const arrayQueryResult = {
+        _id: s.id,
+        name: s.name,
+        desc: s.desc,
+        perda: s.perda,
+        penjelasan: jawaban,
+      };
 
-    return arrayQueryResult;
-  }));
+      return arrayQueryResult;
+    }),
+  );
 
   return await promptsPerSource;
-};
+}
 
 export async function penjelasanPromptBulk(query, sources) {
-  console.log('fungsi penjelasanPrompt()');
+  console.log("fungsi penjelasanPrompt()");
 
   //query: penugasan pembangunan fasilitas air bersih
   const daftarPerusahaan = `
@@ -169,7 +212,7 @@ export async function penjelasanPromptBulk(query, sources) {
     5. ${sources[4].name}
     **PERDA**: ${sources[4].perda}
     **DESKRIPSI**: ${sources[4].desc}
-    `
+    `;
   const prompt = `
     Tugas anda adalah menentukan kesesuaian potensi penugasan dari pemerintah daerah 
     dengan tujuan pendirian perusahaan BUMD, dari "potensi petugasan yang ditanyakan" di bawah. 
@@ -229,75 +272,78 @@ export async function penjelasanPromptBulk(query, sources) {
   // };
 
   return jawaban;
-};
+}
 
-export async function evaluasiBUMDPrompt(query, bumd){
+export async function evaluasiBUMDPrompt(query, bumd) {
   console.log("fungsi evaluasiBUMDPrompt() di Gemini AI", query, bumd.name);
-  const prompt = createPrompt(query,bumd)
+  const prompt = createPrompt(query, bumd);
   const stream = await model.generateContentStream(prompt);
   return stream;
-};
+}
 
-export async function evaluasiAset(query, sources){
-  console.log('fungsi evaluasiAset()');
+export async function evaluasiAset(query, sources) {
+  console.log("fungsi evaluasiAset()");
 
-  const promptPerSources = Promise.all(sources.map(async file => {
-    console.log(`prompt ${file.perda}`);
-    // console.log(file.desc);
+  const promptPerSources = Promise.all(
+    sources.map(async (file) => {
+      console.log(`prompt ${file.perda}`);
+      // console.log(file.desc);
 
-    // asli
-    const prompt = asetPrompt(query, file.desc);
-    // dummy
-    // const prompt = asetPromptDummy(query, file.desc);
+      // asli
+      const prompt = asetPrompt(query, file.desc);
+      // dummy
+      // const prompt = asetPromptDummy(query, file.desc);
 
-    const safe = {
-      "HARM_CATEGORY_HARASSMENT": "BLOCK_NONE",
-      "HARM_CATEGORY_HATE_SPEECH": "BLOCK_NONE",
-      "HARM_CATEGORY_SEXUALLY_EXPLICIT": "BLOCK_NONE",
-      "HARM_CATEGORY_DANGEROUS_CONTENT": "BLOCK_NONE",
-    };
+      const safe = {
+        HARM_CATEGORY_HARASSMENT: "BLOCK_NONE",
+        HARM_CATEGORY_HATE_SPEECH: "BLOCK_NONE",
+        HARM_CATEGORY_SEXUALLY_EXPLICIT: "BLOCK_NONE",
+        HARM_CATEGORY_DANGEROUS_CONTENT: "BLOCK_NONE",
+      };
 
-    try {
-      const stream = await model.generateContentStream(prompt, safe);
-      // const stream = await model.generateContentStream(prompt);
-      const result = { id: file.id, penjelasan: stream };
-      // console.log(result);
-  
-      return result;
-    } catch (error) {
-      console.log(error);
-    };
-  }));
+      try {
+        const stream = await model.generateContentStream(prompt, safe);
+        // const stream = await model.generateContentStream(prompt);
+        const result = { id: file.id, penjelasan: stream };
+        // console.log(result);
+
+        return result;
+      } catch (error) {
+        console.log(error);
+      }
+    }),
+  );
 
   return await promptPerSources;
-};
+}
 
-export async function extractBUMDJSON(pdf){
-  let content = [{
-    fileData: pdf,
-  }];
-  
+export async function processGeminiWithFile(file, prompt, isJSON = false) {
+  const pdf = {
+    mimeType: file.mimeType,
+    fileUri: file.uri,
+  };
+
+  let content = [
+    {
+      fileData: pdf,
+    },
+  ];
   content.push({
-    text: extractBUMDInfo(),
+    text: prompt,
   });
+  let response = null;
+  if (isJSON) {
+    const request = await modelExtractorJSON.generateContent(content);
+    try {
+      response = JSON.parse(request.response.text());
+    } catch (error) {
+      throw new Error("failed to parse JSON response");
+    }
+  } else {
+    const request = await modelExtractor.generateContent(content);
+    response = request.response.text();
+  }
 
-  const request = await modelExtractorJSON.generateContent(content);
-  const response = JSON.parse(request.response.text());
   // console.log(response);
   return response;
-};
-
-export async function extractBUMDDescription(pdf){
-  let content = [{
-    fileData: pdf,
-  }];
-  
-  content.push({
-    text: extractBUMDContent(),
-  });
-
-  const request = await modelExtractor.generateContent(content);
-  const response = request.response.text();
-  // console.log(response);
-  return response;
-};
+}
