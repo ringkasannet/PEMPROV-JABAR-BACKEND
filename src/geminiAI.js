@@ -1,12 +1,17 @@
 import * as dotenv from 'dotenv';
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { createPrompt, asetPrompt, asetPromptDummy } from './prompt.js';
+import { createPrompt, asetPrompt, asetPromptDummy, extractBUMDInfo, extractBUMDContent } from './prompt.js';
 
 dotenv.config();
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 
-const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
+const modelExtractor = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+const modelExtractorJSON = genAI.getGenerativeModel({
+  model: 'gemini-1.5-flash',
+  generationConfig: { responseMimeType: "application/json" },
+});
 
 export async function queryAnalysis(query) {
   console.log('fungsi queryAnalysis()')
@@ -267,4 +272,32 @@ export async function evaluasiAset(query, sources){
   return await promptPerSources;
 };
 
-export async function extractBUMDFile(){};
+export async function extractBUMDJSON(pdf){
+  let content = [{
+    fileData: pdf,
+  }];
+  
+  content.push({
+    text: extractBUMDInfo(),
+  });
+
+  const request = await modelExtractorJSON.generateContent(content);
+  const response = JSON.parse(request.response.text());
+  // console.log(response);
+  return response;
+};
+
+export async function extractBUMDDescription(pdf){
+  let content = [{
+    fileData: pdf,
+  }];
+  
+  content.push({
+    text: extractBUMDContent(),
+  });
+
+  const request = await modelExtractor.generateContent(content);
+  const response = request.response.text();
+  // console.log(response);
+  return response;
+};

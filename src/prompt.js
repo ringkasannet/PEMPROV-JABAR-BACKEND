@@ -210,8 +210,76 @@ export function asetPromptDummy(query, sources){
   `
 };
 
-export function extractBUMDFile(){
+// nomor peraturan, tahun, nama PT
+export function extractBUMDInfo(){
   return `
+  anda merupakan seorang ahli pengarsipan dokumen hukum.
   
+  anda akan diberikan dokumen hukum.
+
+  tugas anda adalah mengekstrak informasi dari dokumen yang diberikan, diantaranya:
+  - nomor dokumen.
+  - tahun dokumen.
+  - jenis peraturan (peraturan gubernur atau peraturan daerah).
+  - nama perusahaan/PT/BUMD.
+  
+  catatan:
+  - jenis peraturan disingkat.
+    - Peraturan Gubernur menjadi Pergub.
+    - Peraturan Daerah menjadi Perda.
+  - jenis peraturan disertai dengan nomor dokumen dan tahun dokumen.
+    - Peraturan Gubernur Nomor 10 Tahun 2000 menjadi Pergub 10/2000.
+  - jika nama perusahaan/PT/BUMD berjumlah banyak, maka gabungkan ke dalam satu string.
+  - telitilah saat mengkaji informasi pada dokumen.
+
+  berikan jawaban dalam format JSON di bawah.
+  {
+    'name': nama perusahaan/PT/BUMD,
+    'perda': jenis peraturan,
+  }
+  
+  jika nama perusahaan/PT/BUMD berjumlah banyak, maka gabungkan ke dalam satu object JSON, bukan menjadi variabel JSON terpisah.
+    contoh:
+      jika terdapat tiga PT, yaitu PT. Migas Hulu Jabar, Migas Utama Jabar (Perseroda), dan PT. Migas Daerah Sumedang.
+      gabungkan ketiga PT tersebut ke dalam satu object, yaitu {'name': 'PT. Migas Hulu Jabar, Migas Utama Jabar (Perseroda), dan PT. Migas Daerah Sumedang'}.
+        contoh JSON yang benar.
+        {
+          'name': 'PT. Migas Hulu Jabar, Migas Utama Jabar (Perseroda), dan PT. Migas Daerah Sumedang',
+          'perda': 'Perda 13/2010',
+        }
+        
+        contoh JSON yang salah.
+        {
+          'name': 'PT. Migas Hulu Jabar',
+          'perda': 'Perda 13/2010',
+        },
+        {
+          'name': 'Migas Utama Jabar (Perseroda)',
+          'perda': 'Perda 13/2010',
+        },
+        {
+          'name': 'PT. Migas Daerah Sumedang',
+          'perda': 'Perda 13/2010',
+        }
+
+  `;
+};
+
+
+export function extractBUMDContent(){
+  return `
+  dari peraturan daerah terlampir, identifikasi BUMD yang diatur serta ekstraksi semua pasal dan ayat terkait dengan tujuan pendirian dan lingkup bisnis BUMD tersebut. Jangan ada pasal atau ayat yang tertinggal. Pastikan setiap kata dalam pasal/ayat sama percis dengan dokumen, jangan rubah sedikit pun.
+
+  berikan jawaban dalam format berikut:
+  
+  BUMD ....
+  Tujuan Pendirian dan Ruang Lingkup Usaha: (berikan ringkasan secara lengkap)
+  Dasar Hukum: 
+  Nama Peraturan Daerah 
+  Pasal xxxx .... (ekstraksi teks secara lengkap tanpa merubah sedikitkpun)
+  Pasal ...
+  Pasal ...
+  
+
   `;
 };

@@ -10,7 +10,9 @@ dmsRouter.post("/perda-bumd", upload.single("perda"), (req, res) => {
   res.send("ok");
 });
 
-dmsRouter.get("/localToGemini", (req, res) => {
-  // const result = await BUMDExtractor();
-  re;
+dmsRouter.get("/localToGemini", async (req, res) => {
+  const pdfFile = './public/bumd/Peraturan Daerah Provinsi Jawa Barat Nomor 3 Tahun 2022.pdf';
+  const result = await BUMDExtractor(pdfFile);
+  
+  res.send(result);
 });
