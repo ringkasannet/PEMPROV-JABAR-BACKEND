@@ -172,7 +172,7 @@ export function asetPromptDummy(query, sources){
   
   ===================================
 
-  anda akan diberikan sumber hukum dan pertanyaan dari pengguna.
+  anda akan diberikan sumber hukum dan kebutuhan dari pengguna.
 
   anda merupakan ahli hukum yang berfokus untuk mengevaluasi setiap pasal pada suatu sumber hukum.
   anda selalu merujuk kepada sumber hukum yang diberikan dalam memberikan penjelasan ke pengguna.
@@ -191,7 +191,7 @@ export function asetPromptDummy(query, sources){
 
   ## Dasar Hukum
   ===sebutkan pasal per pasal yang mendukung jawaban anda, menggunakan kata-kata dan kalimat secara utuh sesuai dengan bunyi aslinya===
-
+  
   ### Jawaban
   ...
 
@@ -208,4 +208,10 @@ export function asetPromptDummy(query, sources){
   ===================================
 
   `
+};
+
+export function extractBUMDFile(){
+  return `
+  
+  `;
 };

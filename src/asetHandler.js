@@ -322,7 +322,7 @@ export async function processAsetQuery(query, model, topK){
     try {
       queryResults = await evaluasiAset(query, sourcesList);
       return queryResults;
-    } catch (error){
+    } catch (error) {
       console.log(error);
       return false;
     };
@@ -390,7 +390,7 @@ export async function inputDataAsetObject(objInput){
 
 export async function removeSelectedAsetChunks(chunksID){
   console.log('fungsi removeSelectedAsetChunks()');
-  // console.log(chunksID);
+  console.log(chunksID);
   
   if(chunksID.length !== 0){
     // hapus chunks terpilih pada pinecone vdb
@@ -410,3 +410,119 @@ export async function removeSelectedAsetChunks(chunksID){
     console.log('please select chunks...');
   };
 };
+
+// function mergeDataAsetInput(rawData, maxToken){
+//   console.log('fungsi mergeDataAsetInput()');
+
+//   let finalChunk = [];
+//   let chunkDesc = '';
+//   let currentChunk = '';
+
+//   for(let i = 0; i < rawData.length; i++) {
+//     currentChunk += rawData[i].desc;
+//     const descToken = openaiTokenCounter.text(currentChunk, "text-embedding-3-large");
+//     console.log(descToken);
+
+//     if(descToken >= maxToken){
+//       finalChunk.push(chunkDesc);
+//       currentChunk = '';
+//       i--;
+//     } else {
+//       chunkDesc = currentChunk;
+//     };
+//   };
+  
+//   finalChunk.push(chunkDesc);
+  
+//   return finalChunk;
+// };
+
+// export async function inputDataAsetArray(jsonInput){
+//   console.log('fungsi inputDataAsetArray()');
+
+//   const nChunks = jsonInput.length;
+//   // console.log(nChunks);
+
+//   let tmpData = [];
+  
+//   for (let i = 0; i < nChunks; i++) {
+//     // console.log(jsonInput[i].name);
+//     const perda = `${jsonInput[i].jenis} ${jsonInput[i].nomor}/${jsonInput[i].tahun}`
+//     // console.log(perda);
+
+//     let desc = '';
+    
+//     if(jsonInput[i].no_bagian !== 'NULL'){
+//       desc += '\nBagian ' + jsonInput[i].no_bagian + '\n' + jsonInput[i].nama_bagian + '\n';
+//     };
+
+//     if(jsonInput[i].no_paragraf !== 'NULL'){
+//       desc += '\nParagraf ' + jsonInput[i].no_paragraf + '\n' + jsonInput[i].nama_paragraf + '\n'
+//     };
+    
+//     desc += jsonInput[i].desc;
+
+//     tmpData.push({
+//       name: jsonInput[i].name,
+//       perda: perda,
+//       no_bab: jsonInput[i].no_bab,
+//       nama_bab: jsonInput[i].nama_bab,
+//       desc: desc,
+//     });
+//   };
+//   console.log(tmpData);
+
+//   let fixDataInput = [];
+//   const maxToken = 8000;
+
+//   tmpData.forEach(item => {
+//     const descToken = openaiTokenCounter.text(item.desc, "text-embedding-3-large");
+//     console.log(descToken);
+//   });
+
+//   const unchunkedData = tmpData.filter(item => {
+//     const descToken = openaiTokenCounter.text(item.desc, "text-embedding-3-large");
+//     // console.log('token', descToken);
+//     return descToken >= maxToken;
+//   });
+
+//   if(unchunkedData.length !== 0){
+//     console.log('unchunkedData:', unchunkedData.length);
+//     for(let i = 0; i < unchunkedData.length; i++){
+//       fixDataInput.push({
+//         name: tmpData[0].name,
+//         perda: tmpData[0].perda,
+//         no_bab: tmpData[0].no_bab,
+//         nama_bab: tmpData[0].nama_bab,
+//         desc: unchunkedData[i].desc,
+//       });
+//     };
+//   };
+
+//   const chunkedData = tmpData.filter(item => {
+//     const descToken = openaiTokenCounter.text(item.desc, "text-embedding-3-large");
+//     // console.log('token', descToken);
+//     return descToken < maxToken;
+//   });
+
+//   let chunkDataResult = [];
+
+//   if(chunkedData.length !== 0){
+//     console.log('chunkedData:', chunkedData.length);
+//     chunkDataResult = mergeDataAsetInput(chunkedData, maxToken);
+//   };
+
+//   // console.log(chunkDataResult);
+
+//   for(let i = 0; i < chunkDataResult.length; i++){
+//     fixDataInput.push({
+//       name: tmpData[0].name,
+//       perda: tmpData[0].perda,
+//       no_bab: tmpData[0].no_bab,
+//       nama_bab: tmpData[0].nama_bab,
+//       desc: chunkDataResult[i],
+//     });
+//   };
+
+//   return fixDataInput;
+// };

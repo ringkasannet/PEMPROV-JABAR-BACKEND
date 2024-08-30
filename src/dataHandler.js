@@ -21,7 +21,7 @@ export async function getBUMDNotEmbedded(){
   const BUMDNotEmbedded = BUMDList.filter((BUMDItem) => {
     return BUMDItem.embedding !== true;
   });
-
+  
   return BUMDNotEmbedded;
 };
 
@@ -199,7 +199,7 @@ export async function addPropertyMongoDb(propertyName, propertyValue){
 
 export async function inputDataBUMDObject(objInput){
   console.log('fungsi inputDataBUMDObject()');
-  // console.log(objInput);
+  console.log(objInput);
 
   let jenis = '';
 
@@ -231,7 +231,7 @@ export async function inputDataBUMDObject(objInput){
   // upload chunks ke mongo db
   console.log(`uploads ${perda} to mongodb...`);
   await collectionBUMD.insertOne(data);
-
+  
   // embed desc
   const vectorDesc = await embeddingOpenAI.embedding(data.desc);
   // console.log(vectorDesc);
@@ -255,7 +255,7 @@ export async function inputDataBUMDObject(objInput){
 
 export async function removeSelectedBUMD(chunksID){
   console.log('fungsi removeSelectedBUMD()');
-  // console.log(chunksID);
+  console.log(chunksID);
   
   if(chunksID.length !== 0){
     // hapus chunks terpilih pada pinecone vdb

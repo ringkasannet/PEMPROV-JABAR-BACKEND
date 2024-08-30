@@ -6,11 +6,11 @@ export let dbClient;
 
 const dbName = 'pemprov-jabar-bumd';
 // asli
-const colNameBUMD = 'BUMD';
-const colNameAset = 'Asset';
+// const colNameBUMD = 'BUMD';
+// const colNameAset = 'Asset';
 // dummy
-// const colNameBUMD = 'test-bumd';
-// const colNameAset = 'test-aset';
+const colNameBUMD = 'test-bumd';
+const colNameAset = 'test-aset';
 
 export let collectionBUMD = null;
 export let collectionAset = null;

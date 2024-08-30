@@ -259,10 +259,12 @@ export async function evaluasiAset(query, sources){
       // console.log(result);
   
       return result;
-    }catch(error){
+    } catch (error) {
       console.log(error);
     };
   }));
 
   return await promptPerSources;
 };
+
+export async function extractBUMDFile(){};
