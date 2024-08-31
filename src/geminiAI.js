@@ -37,7 +37,7 @@ export async function uploadToGemini(pdfPath){
 
 export async function checkActiveFiles(pdf){
   console.log(`check if file is ready to use or not ...`);
-  console.log(pdf);
+  // console.log(pdf);
   let file = await fileManager.getFile(pdf.name);
   
   while (file.state === 'PROCESSING'){
@@ -50,8 +50,9 @@ export async function checkActiveFiles(pdf){
     throw Error(`${file.displayName} failed to process`);
   };
 
-  console.log('all files ready to process!');
+  console.log('file ready to process!');
 };
+
 export async function queryAnalysis(query) {
   console.log("fungsi queryAnalysis()");
 
@@ -328,9 +329,11 @@ export async function processGeminiWithFile(file, prompt, isJSON = false) {
       fileData: pdf,
     },
   ];
+  
   content.push({
     text: prompt,
   });
+
   let response = null;
   if (isJSON) {
     const request = await modelExtractorJSON.generateContent(content);

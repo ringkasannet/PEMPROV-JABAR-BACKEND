@@ -2,7 +2,7 @@ import { ObjectId } from 'mongodb';
 import { collectionBUMD } from './mongodb_handler.js';
 import { processGeminiWithFile } from './geminiAI.js';
 import { get } from 'https';
-import { getBUMDDescPrompt } from './prompt.js';
+import { getBUMDDescPrompt, getBUMDInfoPrompt, getBUMDPasalPrompt } from './prompt.js';
  
 // import { parsePdf, docPerda } from "./pdfHandler"; 
 
@@ -15,33 +15,46 @@ import { getBUMDDescPrompt } from './prompt.js';
 export async function BUMDExtractor(file){
   // console.log(docPerda);
 
-  // let BUMDInfo = null;
-  // try {
-  //   BUMDInfo = await processGeminiWithFile(pdfSource,getBUMDInfoPrompt(),true);
-  // } catch (error) {
-  //   console.log(error);
-  // };
-
+  let BUMDInfo = null;
+  try {
+    BUMDInfo = await processGeminiWithFile(file, getBUMDInfoPrompt(), true);
+  } catch (error) {
+    console.log(error);
+  };
+  // console.log(BUMDInfo);
+  
   let BUMDDescription = null;
   try {
-    BUMDDescription = await processGeminiWithFile(file,getBUMDDescPrompt(),true);
+    BUMDDescription = await processGeminiWithFile(file, getBUMDDescPrompt(), false);
   } catch (error) {
     console.log(error);
     throw error;
   };
+  // console.log(BUMDDescription);
 
-  // const result = {
-  //   _id: new ObjectId(),
-  //   name: getJsonExtraction.name,
-  //   perda: getJsonExtraction.perda,
-  //   desc: getFileContent,
-  //   propertyName: true,
-  //   embedding: false,
-  // };
-  // // update ke mongo
-  // console.log(`uploads ${result.perda} to mongodb...`);
-  // await collectionBUMD.insertOne(result);
+  let BUMDPasalDesc = null;
+  try {
+    BUMDPasalDesc = await processGeminiWithFile(file, getBUMDPasalPrompt(), true);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  };
+  // console.log(BUMDPasalDesc);
 
-  // return result;
-  return BUMDDescription;
+  let result = {
+    desc: BUMDDescription,
+  };
+
+  BUMDPasalDesc.pasal.forEach(pasal => {
+    result.desc += '\n\n' + pasal.value;
+  });
+
+  result._id = new ObjectId();
+  result.name = BUMDInfo.name;
+  result.perda = BUMDInfo.perda;
+  result.propertyName = true;
+  result.embedding = false;
+  // console.log(result);
+
+  return result;
 };
