@@ -1,5 +1,5 @@
-export function createPrompt(query,bumd){
-    return `
+export function createPrompt(query, bumd) {
+  return `
     Anda adalah ahli hukum tata negara secara khusus dalam mengevaluasi kesesuaian penugasan BUMD dengan landasan hukum. Dalam memberikan jawaban anda selalu merujuk pada peraturan hukum yang berlaku dan analisis hukum yang mendalam
     Tugas anda adalah menentukan kesesuaian potensi penugasan dari pemerintah daerah 
     dengan tujuan pendirian perusahaan BUMD berdasarkan sumber dokumen hukum terlampir. 
@@ -54,11 +54,10 @@ export function createPrompt(query,bumd){
     Analisis: Penugasan pengelolaan kemiskinan pada BUMD XYZ memiliki kesesuaian yang ...
     
   
-    `
-
+    `;
 }
 
-export function asetPrompt(query, sources){
+export function asetPrompt(query, sources) {
   // console.log(sources);
   return `
 
@@ -164,10 +163,10 @@ export function asetPrompt(query, sources){
   ...
   ### Skor relevansi dokumen: 80% ###
 
-  `
-};
+  `;
+}
 
-export function asetPromptDummy(query, sources){
+export function asetPromptDummy(query, sources) {
   return `
   
   ===================================
@@ -207,11 +206,11 @@ export function asetPromptDummy(query, sources){
 
   ===================================
 
-  `
-};
+  `;
+}
 
 // nomor peraturan, tahun, nama PT
-export function getBUMDInfoPrompt(){
+export function getBUMDInfoPrompt() {
   return `
   anda merupakan seorang ahli pengarsipan dokumen hukum.
   
@@ -263,10 +262,9 @@ export function getBUMDInfoPrompt(){
         }
 
   `;
-};
+}
 
-
-export function getBUMDDescPrompt(){
+export function getBUMDDescPrompt() {
   return `
   Anda adalah seorang ahli hukum tata negara yang berfokus pada analisis hukum terhadap peraturan daerah yang mengatur tentang pendirian BUMD.
   Tugas anda adalah mengidentifikasi ruang tujuan pendirian dan ruang lingkup usaha BUMD. 
@@ -275,10 +273,104 @@ export function getBUMDDescPrompt(){
   Pastikan setiap kata dalam pasal/ayat sama percis dengan dokumen, jangan rubah sedikit pun.
   Berikan alasan anda memasukan pasal yang anda ekstraksi apakah pasal tersebut  menjelaskan tujuan pendirian dan ruang lingkup BUMD. Jangan masukan pasal yang tidak menjelaskan tujuan atau ruang lingkup usaha BUMD
 
-  berikan jawaban dalam format JSON berikut:
+  ====OUTPUT====
+  Untuk setiap pasal yang anda identifikasi berikan:
+  pasal: berikan nomor pasal dan kalimat pasal secara lengkap tanpa dirubah tanpa dikurangi
+  alasan: penjelasan mengapa pasal tersebut memberikan penjelasan mengenai tujuan dan ruang lingkup usaha BUMD
+
+  ====CONTOH OUTPUT====
+  [{
+    "pasal": "Pasal 1. Dalam pasal ini...",
+    "alasan": "Pasal ini menjelaskan tujuan pendirian BUMD"
+  }
+  {
+    "pasal": "Pasal 2. BUMD wajib ...",
+    "alasan": "Pasal ini menjelaskan ruang lingkup usaha BUMD"
+}]
+  `;
+}
+
+export function getCombineJSONPrompt(jsonData) {
+  return `
+  Anda akan menerima suatu data JSON yang berisi daftar pasal dan penjelasan alasan inkluasi pasal. 
+  Tugas anda adalah mengambil dan menggabungkan hanya isi pasal dan TIDAK MEMASUKAN alasan. 
+  Anda dilarang untuk menambahkan atau mengurangi isi pasal yang diberikan.
+
+  ====OUTPUT====
+  PASAL 1. Dalam pasal ini...
+  PASAL 2. BUMD wajib ...
+
+  =====JSON Data=====
+  ${JSON.stringify(jsonData)}
+  `;
+}
+
+export function getBUMDExtractorPrompt() {
+  return `
+  Anda adalah seorang ahli hukum tata negara yang berfokus pada analisis hukum terhadap peraturan daerah yang mengatur tentang pendirian BUMD.
+  Anda akan menerima satu dokumen hukum peraturan daerah atau peraturan gubernur yang mengatur tentang pendirian BUMD.
+  Tugas anda ada 2:
+  1. Tugas pertama anda adalah mengidentifikasi ruang tujuan pendirian dan ruang lingkup usaha BUMD. 
+  Dari peraturan daerah terlampir, ekstraksi semua pasal dan ayat yang menjelaskan tujuan pendirian dan lingkup bisnis BUMD tersebut. 
+  Jangan ada pasal atau ayat yang tertinggal. 
+  Pastikan setiap kata dalam pasal/ayat sama percis dengan dokumen, jangan rubah sedikit pun.
+  Berikan alasan anda memasukan pasal yang anda ekstraksi apakah pasal tersebut  menjelaskan tujuan pendirian dan ruang lingkup BUMD. Jangan masukan pasal yang tidak menjelaskan tujuan atau ruang lingkup usaha BUMD
+
+
+  2. Tugas kedua anda adalah mengekstrak informasi dari dokumen yang diberikan terkait info BUMD, diantaranya:
+  - nomor dokumen.
+  - tahun dokumen.
+  - jenis peraturan (peraturan gubernur atau peraturan daerah).
+  - nama perusahaan/PT/BUMD.
   
-  {pasal:[{pasal 1:"isi pasal ...", alasan:"alasan ekstraksi pasal 1"},{pasal 2:"isi pasal ...", alasan:"alasan ekstraksi pasal 2"}]}
-  
+  catatan:
+  - jenis peraturan disingkat.
+    - Peraturan Gubernur menjadi Pergub.
+    - Peraturan Daerah menjadi Perda.
+  - jenis peraturan disertai dengan nomor dokumen dan tahun dokumen.
+    - Peraturan Gubernur Nomor 10 Tahun 2000 menjadi Pergub 10/2000.
+  - jika nama perusahaan/PT/BUMD berjumlah banyak, maka gabungkan ke dalam satu string.
+  - telitilah saat mengkaji informasi pada dokumen.
+
+
+    ====OUTPUT====
+  1. Terkait tugas identifikasi pasal, U=untuk setiap pasal yang anda identifikasi berikan:
+  pasal: berikan nomor pasal dan kalimat pasal secara lengkap tanpa dirubah tanpa dikurangi
+  alasan: penjelasan mengapa pasal tersebut memberikan penjelasan mengenai tujuan dan ruang lingkup usaha BUMD
+2. Terkait identifikasi info BUMD, jika nama perusahaan/PT/BUMD berjumlah banyak, maka gabungkan ke dalam satu object JSON, bukan menjadi variabel JSON terpisah.
+    contoh:
+      jika terdapat tiga PT, yaitu PT. Migas Hulu Jabar, Migas Utama Jabar (Perseroda), dan PT. Migas Daerah Sumedang.
+      gabungkan ketiga PT tersebut ke dalam satu object, yaitu {'name': 'PT. Migas Hulu Jabar, Migas Utama Jabar (Perseroda), dan PT. Migas Daerah Sumedang'}.
+        contoh JSON yang benar.
+        {
+          'name': 'PT. Migas Hulu Jabar, Migas Utama Jabar (Perseroda), dan PT. Migas Daerah Sumedang',
+          'perda': 'Perda 13/2010 tentang ...',
+        }
+        
+        contoh JSON yang salah.
+        {
+          'name': 'PT. Migas Hulu Jabar',
+          'perda': 'Perda 13/2010',
+        },
+        {
+          'name': 'Migas Utama Jabar (Perseroda)',
+          'perda': 'Perda 13/2010',
+        },
+        {
+          'name': 'PT. Migas Daerah Sumedang',
+          'perda': 'Perda 13/2010',
+        }
+  3. Dalam memberikan nomor perda pastikan nama perda diberikan secara lengkap misalnya Perda 13/2010 tentang pendirian PT Sejahtera Alam. Jangan hanya memberikan nomor perda saja.
+  ====CONTOH OUTPUT====
+  {'name': 'PT. Migas Hulu Jabar, Migas Utama Jabar (Perseroda), dan PT. Migas Daerah Sumedang','perda': 'Perda 13/2010 tentang ...'},'pasal_terkait_tujuan':
+  [{
+    "pasal": "Pasal 1. Dalam pasal ini...",
+    "alasan": "Pasal ini menjelaskan tujuan pendirian BUMD"
+  }
+  {
+    "pasal": "Pasal 2. BUMD wajib ...",
+    "alasan": "Pasal ini menjelaskan ruang lingkup usaha BUMD"
+}]}
 
   `;
-};
+}

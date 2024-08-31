@@ -1,31 +1,35 @@
 import * as dotenv from "dotenv";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { GoogleAIFileManager } from '@google/generative-ai/server';
+import { GoogleAIFileManager } from "@google/generative-ai/server";
+import { SchemaType } from '@google/generative-ai';
 
-import {
-  createPrompt,
-  asetPrompt,
-  asetPromptDummy,
-} from "./prompt.js";
+import { createPrompt, asetPrompt, asetPromptDummy } from "./prompt.js";
+
 
 dotenv.config();
 const fileManager = new GoogleAIFileManager(process.env.GOOGLE_API_KEY);
+
+export async function listUploadedFileToGemini(){
+  const files = await fileManager.listFiles();
+  return files.files;
+}
+
+export async function getUploadedFileToGemini(displayName){
+  const files = await listUploadedFileToGemini(); 
+  const file=files.find(file=>file.displayName===displayName);
+  return file;
+}
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 const modelExtractor = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-const modelExtractorJSON = genAI.getGenerativeModel({
-  model: "gemini-1.5-flash",
-  generationConfig: { responseMimeType: "application/json" },
-});
 
-
-export async function uploadToGemini(pdfPath){
+export async function uploadToGemini(pdfPath) {
   console.log(`upload "${pdfPath}" to Gemini ...`);
 
   const uploadFile = await fileManager.uploadFile(pdfPath, {
-    mimeType: 'application/pdf',
+    mimeType: "application/pdf",
     displayName: pdfPath,
   });
 
@@ -33,25 +37,25 @@ export async function uploadToGemini(pdfPath){
   // console.log(`'${file.displayName}' as '${file.name}' was uploaded`);
 
   return file;
-};
+}
 
-export async function checkActiveFiles(pdf){
+export async function checkActiveFiles(pdf) {
   console.log(`check if file is ready to use or not ...`);
   console.log(pdf);
   let file = await fileManager.getFile(pdf.name);
-  
-  while (file.state === 'PROCESSING'){
-    process.stdout.write('.');
+
+  while (file.state === "PROCESSING") {
+    process.stdout.write(".");
     await new Promise((resolve) => setTimeout(resolve, 10_000));
     file = await fileManager.getFile(pdf.name);
-  };
+  }
 
-  if (file.state !== 'ACTIVE'){
+  if (file.state !== "ACTIVE") {
     throw Error(`${file.displayName} failed to process`);
-  };
+  }
 
-  console.log('all files ready to process!');
-};
+  console.log("all files ready to process!");
+}
 export async function queryAnalysis(query) {
   console.log("fungsi queryAnalysis()");
 
@@ -317,22 +321,39 @@ export async function evaluasiAset(query, sources) {
   return await promptPerSources;
 }
 
-export async function processGeminiWithFile(file, prompt, isJSON = false) {
-  const pdf = {
-    mimeType: file.mimeType,
-    fileUri: file.uri,
-  };
+export async function processGeminiWithFile(
+  prompt,
+  file = null,
+  isJSON = false,
+  jsonSchema = null,
+) {
+  let content = [];
+  if (file) {
+    const pdf = {
+      mimeType: file.mimeType,
+      fileUri: file.uri,
+    };
 
-  let content = [
-    {
+    content.push({
       fileData: pdf,
-    },
-  ];
+    });
+  }
   content.push({
     text: prompt,
   });
   let response = null;
   if (isJSON) {
+    if (!jsonSchema) {
+      throw new Error("JSON Schema is required for JSON response");
+    }
+    const modelExtractorJSON = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash",
+      generationConfig: {
+        responseMimeType: "application/json",
+        responseSchema: jsonSchema,
+      },
+    });
+
     const request = await modelExtractorJSON.generateContent(content);
     try {
       response = JSON.parse(request.response.text());
