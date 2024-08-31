@@ -3,7 +3,7 @@ import { collectionBUMD } from "./mongodb_handler.js";
 import { processGeminiWithFile } from "./geminiAI.js";
 import { get } from "https";
 import {
-  getBUMDDescPrompt,
+  getBUMDDescPrompt, getBUMDInfoPrompt, getBUMDPasalPrompt,
   getBUMDInfoPrompt,
   getCombineJSONPrompt,
   getBUMDExtractorPrompt,
