@@ -7,7 +7,7 @@
         "start-old": "cross-env NODE_ENV=production pm2 start src/index.js",
         "dev-old": "cross-env NODE_ENV=development nodemon src/index.js",
         "test-old": "echo \"Error: no test specified\" && exit 1",
-        "start": "cross-env NODE_ENV=production npm run serve",
+        "start": "cross-env NODE_ENV=production node dist/index.js",
         "build": "npm run build-ts",
         "serve": "node dist/index.js",
         "test": "jest --coverage=false --verbose",

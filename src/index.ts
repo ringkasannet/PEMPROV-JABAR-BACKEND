@@ -9,7 +9,7 @@ import { asetRouter } from "./router/asetRouter";
 import { bumdRouter } from "./router/bumdRouter";
 const app = express();
 
-const port = parseInt(process.env.PORT) || 8080;
+const port = parseInt(process.env.PORT) || 3000;
 app.use(express.json());
 app.use(cors());
 app.use("/", router);
