@@ -1,0 +1,12 @@
+export declare function getAllBUMD(): Promise<any>;
+export declare function getBUMDNotEmbedded(): Promise<any>;
+export declare function getSampleBUMD(): Promise<any[]>;
+export declare function getBumdFromId(id: any): Promise<any>;
+export declare function processEmbeddings(): Promise<any[]>;
+export declare function processQuery(queryValue: any, model: any): Promise<any>;
+export declare function getBUMDCandidate(queryValue: any, num?: number): Promise<any>;
+export declare function evaluasiBUMD(query: any, bumd: any): Promise<import("openai/streaming.js").Stream<import("openai/resources/index.js").ChatCompletionChunk>>;
+export declare function removePropertyMongoDb(propertyName: any): Promise<void>;
+export declare function addPropertyMongoDb(propertyName: any, propertyValue: any): Promise<void>;
+export declare function inputDataBUMDObject(objInput: any): Promise<void>;
+export declare function removeSelectedBUMD(chunksID: any): Promise<void>;
