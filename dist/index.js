@@ -11,7 +11,7 @@ const dmsRouter_1 = require("./router/dmsRouter");
 const asetRouter_1 = require("./router/asetRouter");
 const bumdRouter_1 = require("./router/bumdRouter");
 const app = (0, express_1.default)();
-const port = parseInt(process.env.PORT) || 3000;
+const port = parseInt(process.env.PORT) || 8080;
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
 app.use("/", mainRouter_1.router);
