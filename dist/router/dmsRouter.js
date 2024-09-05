@@ -82,22 +82,14 @@ exports.dmsRouter.delete("/perda-bumd", async (req, res) => {
     await (0, bumdHandler_js_1.removeSelectedBUMDs)(chunksID);
     res.send("done");
 });
-exports.dmsRouter.post("/extract-perda-aset", upload.single("file"), async (req, res) => {
+exports.dmsRouter.post("/extract-perda-aset-file", upload.single("file"), async (req, res) => {
     try {
         console.log("in extract perda aset");
-        console.time("checking file already uploaded");
-        const file = await (0, geminiAI_js_1.getUploadedFileToGemini)(req.file.originalname);
-        if (!file) {
-            console.time("upload to gemini");
-            const file = await (0, geminiAI_js_1.uploadToGemini)(req.file.path, req.file.originalname);
-            // console.log(file);
-            await (0, geminiAI_js_1.checkActiveFiles)(file);
-            console.timeEnd("upload to gemini");
-        }
-        else {
-            console.log("file already uploaded");
-        }
-        console.timeEnd("checking file already uploaded");
+        console.time("upload to gemini");
+        const file = await (0, geminiAI_js_1.uploadToGemini)(req.file.path, req.file.originalname);
+        // console.log(file);
+        await (0, geminiAI_js_1.checkActiveFiles)(file);
+        console.timeEnd("upload to gemini");
         const descs = [];
         console.time("initiation aset extractor");
         const asetDescription = await (0, dms_js_1.asetExtractor)(file);
@@ -114,6 +106,27 @@ exports.dmsRouter.post("/extract-perda-aset", upload.single("file"), async (req,
     }
     catch (error) {
         console.log(error);
+        res.status(500).send("internal error");
+    }
+});
+exports.dmsRouter.post("/extract-perda-aset-in-gemini", async (req, res) => {
+    try {
+        console.log("extracting perda aset in gemini");
+        console.time("initiation aset extractor from gemini");
+        const file = await (0, geminiAI_js_1.getUploadedFileToGemini)(req.body.name);
+        if (!file) {
+            res.status(404).send("file not found");
+            return;
+        }
+        else {
+            const descs = [];
+            const asetDescription = await (0, dms_js_1.asetExtractor)(file);
+            descs.push(asetDescription);
+            res.send(descs);
+            console.timeEnd("initiation aset extractor from gemini");
+        }
+    }
+    catch (error) {
         res.status(500).send("internal error");
     }
 });
