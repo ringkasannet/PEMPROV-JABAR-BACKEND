@@ -31,7 +31,7 @@ bumdRouter.get("/processEmbeddings", async (req, res) => {
     }
 });
 
-bumdRouter.get("/askQuestion/:query/:model", async (req, res) => {
+bumdRouter.post("/askQuestion/:query/:model", async (req, res) => {
     console.log(
         "halaman /askQuestion/:query:",
         req.body.query,

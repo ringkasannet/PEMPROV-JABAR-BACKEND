@@ -39,7 +39,7 @@ exports.bumdRouter.get("/processEmbeddings", async (req, res) => {
         // res.status(500).send(error);
     }
 });
-exports.bumdRouter.get("/askQuestion/:query/:model", async (req, res) => {
+exports.bumdRouter.post("/askQuestion/:query/:model", async (req, res) => {
     console.log("halaman /askQuestion/:query:", req.body.query, req.params.model);
     try {
         const queryResults = await (0, bumdHandler_1.processQuery)(req.body.query, 5, req.params.model); //TODO sanitasi query
