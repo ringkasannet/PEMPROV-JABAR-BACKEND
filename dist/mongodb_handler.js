@@ -11,7 +11,7 @@ if (process.env.NODE_ENV === "development") {
     colNameBUMD = "test-bumd";
     colNameAset = "test-aset";
 }
-else if (process.env.NODE_ENV === "production") {
+else {
     console.log("using production mongoDB");
     colNameBUMD = "BUMD";
     colNameAset = "Asset";

@@ -13,7 +13,7 @@ if (process.env.NODE_ENV === "development") {
     indexBUMD = pc.index("bumd");
     indexAset = pc.index("aset");
 }
-else if (process.env.NODE_ENV === "production") {
+else {
     // ringkasan net account
     console.log("Using private production pinecone");
     pc = new pinecone_1.Pinecone({
