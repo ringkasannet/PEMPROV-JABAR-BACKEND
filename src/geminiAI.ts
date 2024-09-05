@@ -35,7 +35,7 @@ export async function getUploadedFileToGemini(displayName: string) {
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 // const modelExtractor = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 export async function uploadToGemini(pdfPath: string, fileName?: string) {
