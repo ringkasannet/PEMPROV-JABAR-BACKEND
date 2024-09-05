@@ -25,23 +25,19 @@ exports.dmsRouter.get("/uploaded", async (req, res) => {
         res.send(file);
     }
 });
-exports.dmsRouter.post("/extract-perda-bumd", upload.single("file"), async (req, res) => {
+exports.dmsRouter.post("/extract-perda-bumd-file", upload.single("file"), async (req, res) => {
     try {
-        const file = await (0, geminiAI_js_1.getUploadedFileToGemini)(req.file.originalname);
-        if (!file) {
-            console.time("upload to gemini");
-            const file = await (0, geminiAI_js_1.uploadToGemini)(req.file.path, req.file.originalname);
-            // console.log(file);
-            await (0, geminiAI_js_1.checkActiveFiles)(file);
-            console.timeEnd("upload to gemini");
-        }
-        else {
-            console.log("file already uploaded");
-        }
+        console.time("upload to gemini");
+        const file = await (0, geminiAI_js_1.uploadToGemini)(req.file.path, req.file.originalname);
+        // console.log(file);
+        await (0, geminiAI_js_1.checkActiveFiles)(file);
+        console.timeEnd("upload to gemini");
         const descs = [];
+        console.time("initiation bumd extractor");
         const bumdDescription = await (0, dms_js_1.BUMDExtractor)(file);
         descs.push(bumdDescription);
         res.send(descs);
+        console.timeEnd("initiation bumd extractor");
         //delete file from multer
         fs_1.default.unlink(req.file.path, err => {
             if (err) {
@@ -52,6 +48,27 @@ exports.dmsRouter.post("/extract-perda-bumd", upload.single("file"), async (req,
     }
     catch (error) {
         console.log(error);
+        res.status(500).send("internal error");
+    }
+});
+exports.dmsRouter.post("/extract-perda-bumd-in-gemini", async (req, res) => {
+    try {
+        console.log("extracting perda bumd in gemini");
+        console.time("initiation bumd extractor from gemini");
+        const file = await (0, geminiAI_js_1.getUploadedFileToGemini)(req.body.name);
+        if (!file) {
+            res.status(404).send("file not found");
+            return;
+        }
+        else {
+            const descs = [];
+            const bumdDescription = await (0, dms_js_1.BUMDExtractor)(file);
+            descs.push(bumdDescription);
+            res.send(descs);
+            console.timeEnd("initiation bumd extractor from gemini");
+        }
+    }
+    catch (error) {
         res.status(500).send("internal error");
     }
 });

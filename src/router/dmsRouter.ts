@@ -25,28 +25,26 @@ dmsRouter.get("/uploaded", async (req, res) => {
         res.send(file);
     }
 });
+
 dmsRouter.post(
-    "/extract-perda-bumd",
+    "/extract-perda-bumd-file",
     upload.single("file"),
     async (req, res) => {
         try {
-            const file = await getUploadedFileToGemini(req.file.originalname);
-            if (!file) {
-                console.time("upload to gemini");
-                const file = await uploadToGemini(
-                    req.file.path,
-                    req.file.originalname,
-                );
-                // console.log(file);
-                await checkActiveFiles(file);
-                console.timeEnd("upload to gemini");
-            } else {
-                console.log("file already uploaded");
-            }
+            console.time("upload to gemini");
+            const file = await uploadToGemini(
+                req.file.path,
+                req.file.originalname,
+            );
+            // console.log(file);
+            await checkActiveFiles(file);
+            console.timeEnd("upload to gemini");
             const descs = [];
+            console.time("initiation bumd extractor");
             const bumdDescription = await BUMDExtractor(file);
             descs.push(bumdDescription);
             res.send(descs);
+            console.timeEnd("initiation bumd extractor");
             //delete file from multer
             fs.unlink(req.file.path, err => {
                 if (err) {
@@ -60,6 +58,26 @@ dmsRouter.post(
         }
     },
 );
+
+dmsRouter.post("/extract-perda-bumd-in-gemini", async (req, res) => {
+    try {
+        console.log("extracting perda bumd in gemini");
+        console.time("initiation bumd extractor from gemini");
+        const file = await getUploadedFileToGemini(req.body.name);
+        if (!file) {
+            res.status(404).send("file not found");
+            return;
+        } else {
+            const descs = [];
+            const bumdDescription = await BUMDExtractor(file);
+            descs.push(bumdDescription);
+            res.send(descs);
+            console.timeEnd("initiation bumd extractor from gemini");
+        }
+    } catch (error) {
+        res.status(500).send("internal error");
+    }
+});
 
 dmsRouter.post("/save-perda-bumd", async (req, res) => {
     try {
@@ -130,10 +148,10 @@ dmsRouter.post("/extract-perda-aset-in-gemini", async (req, res) => {
     try {
         console.log("extracting perda aset in gemini");
         console.time("initiation aset extractor from gemini");
-        const file = await getUploadedFileToGemini(req.body.name); 
+        const file = await getUploadedFileToGemini(req.body.name);
         if (!file) {
             res.status(404).send("file not found");
-            return; 
+            return;
         } else {
             const descs = [];
             const asetDescription = await asetExtractor(file);
