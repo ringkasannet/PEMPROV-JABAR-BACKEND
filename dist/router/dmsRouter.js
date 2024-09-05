@@ -80,10 +80,11 @@ exports.dmsRouter.delete("/perda-bumd", async (req, res) => {
     const chunksID = req.body;
     // console.log(chunksID);
     await (0, bumdHandler_js_1.removeSelectedBUMDs)(chunksID);
-    res.send('done');
+    res.send("done");
 });
 exports.dmsRouter.post("/extract-perda-aset", upload.single("file"), async (req, res) => {
     try {
+        console.time("checking file already uploaded");
         const file = await (0, geminiAI_js_1.getUploadedFileToGemini)(req.file.originalname);
         if (!file) {
             console.time("upload to gemini");
@@ -95,10 +96,13 @@ exports.dmsRouter.post("/extract-perda-aset", upload.single("file"), async (req,
         else {
             console.log("file already uploaded");
         }
+        console.timeEnd("checking file already uploaded");
         const descs = [];
+        console.time("initiation aset extractor");
         const asetDescription = await (0, dms_js_1.asetExtractor)(file);
         descs.push(asetDescription);
         res.send(descs);
+        console.timeEnd("initiation aset extractor");
         //delete file from multer
         fs_1.default.unlink(req.file.path, err => {
             if (err) {
@@ -128,6 +132,6 @@ exports.dmsRouter.delete("/perda-aset", async (req, res) => {
     const perdas = req.body;
     // console.log(chunksID);
     await (0, asetHandler_js_1.removeSelectedPerdaAset)(perdas);
-    res.send('done');
+    res.send("done");
 });
 //# sourceMappingURL=dmsRouter.js.map

@@ -64,8 +64,8 @@ dmsRouter.post(
 dmsRouter.post("/save-perda-bumd", async (req, res) => {
     try {
         console.log("Perda BUMD:", req.body);
-        const perdaBUMD=req.body
-        await savePerdaBUMD(perdaBUMD)
+        const perdaBUMD = req.body;
+        await savePerdaBUMD(perdaBUMD);
         res.send("done");
     } catch (error) {
         res.status(500).send("internal error");
@@ -82,57 +82,61 @@ dmsRouter.get("/clear-all-mongodb", async (req, res) => {
 });
 
 dmsRouter.delete("/perda-bumd", async (req, res) => {
-  console.log("removing bumd");
-  
-  const chunksID = req.body;
-  // console.log(chunksID);
+    console.log("removing bumd");
 
-  await removeSelectedBUMDs(chunksID);
+    const chunksID = req.body;
+    // console.log(chunksID);
 
-  res.send('done');
+    await removeSelectedBUMDs(chunksID);
+
+    res.send("done");
 });
 
 dmsRouter.post(
-  "/extract-perda-aset",
-  upload.single("file"),
-  async (req, res) => {
-      try {
-          const file = await getUploadedFileToGemini(req.file.originalname);
-          if (!file) {
-              console.time("upload to gemini");
-              const file = await uploadToGemini(
-                  req.file.path,
-                  req.file.originalname,
-              );
-              // console.log(file);
-              await checkActiveFiles(file);
-              console.timeEnd("upload to gemini");
-          } else {
-              console.log("file already uploaded");
-          }
-          const descs = [];
-          const asetDescription = await asetExtractor(file);
-          descs.push(asetDescription);
-          res.send(descs);
-          //delete file from multer
-          fs.unlink(req.file.path, err => {
-              if (err) {
-                  console.error(err);
-                  return;
-              }
-          });
-      } catch (error) {
-          console.log(error);
-          res.status(500).send("internal error");
-      }
-  },
+    "/extract-perda-aset",
+    upload.single("file"),
+    async (req, res) => {
+        try {
+            console.time("checking file already uploaded");
+            const file = await getUploadedFileToGemini(req.file.originalname);
+            if (!file) {
+                console.time("upload to gemini");
+                const file = await uploadToGemini(
+                    req.file.path,
+                    req.file.originalname,
+                );
+                // console.log(file);
+                await checkActiveFiles(file);
+                console.timeEnd("upload to gemini");
+            } else {
+                console.log("file already uploaded");
+            }
+            console.timeEnd("checking file already uploaded");
+            const descs = [];
+            console.time("initiation aset extractor")
+            const asetDescription = await asetExtractor(file);
+            descs.push(asetDescription);
+            res.send(descs);
+            console.timeEnd("initiation aset extractor")
+            //delete file from multer
+            fs.unlink(req.file.path, err => {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(500).send("internal error");
+        }
+    },
 );
 
 dmsRouter.post("/save-perda-aset", async (req, res) => {
     try {
         console.log("Perda BUMD:", req.body);
-        const perdaBUMD=req.body
-        await savePerdaAset(perdaBUMD)
+        const perdaBUMD = req.body;
+        await savePerdaAset(perdaBUMD);
         res.send("done");
     } catch (error) {
         res.status(500).send("internal error");
@@ -141,12 +145,11 @@ dmsRouter.post("/save-perda-aset", async (req, res) => {
 
 dmsRouter.delete("/perda-aset", async (req, res) => {
     console.log("removing bumd");
-    
+
     const perdas = req.body;
     // console.log(chunksID);
-  
+
     await removeSelectedPerdaAset(perdas);
-  
-    res.send('done');
-  });
-  
+
+    res.send("done");
+});
