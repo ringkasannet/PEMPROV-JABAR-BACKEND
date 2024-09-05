@@ -84,6 +84,7 @@ exports.dmsRouter.delete("/perda-bumd", async (req, res) => {
 });
 exports.dmsRouter.post("/extract-perda-aset", upload.single("file"), async (req, res) => {
     try {
+        console.log("in extract perda aset");
         console.time("checking file already uploaded");
         const file = await (0, geminiAI_js_1.getUploadedFileToGemini)(req.file.originalname);
         if (!file) {

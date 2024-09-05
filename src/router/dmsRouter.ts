@@ -97,6 +97,7 @@ dmsRouter.post(
     upload.single("file"),
     async (req, res) => {
         try {
+            console.log("in extract perda aset");
             console.time("checking file already uploaded");
             const file = await getUploadedFileToGemini(req.file.originalname);
             if (!file) {
