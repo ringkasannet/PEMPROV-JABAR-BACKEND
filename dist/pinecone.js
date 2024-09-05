@@ -38,6 +38,7 @@ async function matchVectorQuery(query, n, context) {
             vector: query,
             includeValues: true,
         });
+        console.log("completed matchVectorQuery()");
         return queryResponse.matches;
     }
     catch (error) {

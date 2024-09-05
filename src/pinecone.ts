@@ -51,6 +51,8 @@ export async function matchVectorQuery(
             vector: query,
             includeValues: true,
         });
+        console.log("completed matchVectorQuery()");
+
         return queryResponse.matches;
     } catch (error) {
         console.log(error);
