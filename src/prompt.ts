@@ -220,11 +220,14 @@ export function getBUMDExtractorPrompt() {
     return `
   Anda adalah seorang ahli hukum tata negara yang berfokus pada analisis hukum terhadap peraturan daerah yang mengatur tentang pendirian BUMD.
   Anda akan menerima satu dokumen hukum peraturan daerah atau peraturan gubernur yang mengatur tentang pendirian BUMD.
+  Jangan berikan jawaban selain dari dokumen hukum yang diberikan.
   Tugas anda ada 4:
   1. Tentukan apakah dokumen yang diatur adalah suatu peraturan daerah (dapat beberapa bentuk) yang mengatur tentang BUMD (Badan Usaha Milik Daerah). 
   Apabila dokumen tidak mengatur tentang BUMD berikan status pada isPerdaBUMD sebagai false, dan hentikan proses serta tidak perlu memberikan jawaban pada bagian json lainnya.
   Apabila dokumen mengatur tentang BUMD berikan status pada isPerdaBUMD sebagai true, dan lanjutkan proses ke tahap selanjutnya.
-  2. Tugas anda yang kedua adalah, identifikasi secara lengkap keseluruhan pasal, dan ekstraksi pasal yang  menjelaskan tentang:
+  Ingat dokumen tentang BUMD adalah dokumen yang mengatur tentang pendirian BUMD, bukan dokumen yang mengatur tentang perusahaan lain yang bukan BUMD. Terutama hari hati dengan peraturan daerah yang mengatur tentang pengelolaan aset daerah.
+  Jangan berhalusinasi.
+  2. Tugas anda yang kedua adalah, identifikasi secara lengkap keseluruhan pasal, dan ekstraksi pasal dari dokumen yang  menjelaskan tentang:
   a) maksud dan tujuan pendirian, 
   b) ruang lingkup usaha, dan 
   c) kegiatan usaha BUMD. 
@@ -246,6 +249,7 @@ export function getBUMDExtractorPrompt() {
     - Peraturan Gubernur Nomor 10 Tahun 2000 menjadi Pergub 10/2000.
   - jika nama perusahaan/PT/BUMD berjumlah banyak, maka gabungkan ke dalam satu string.
   - telitilah saat mengkaji informasi pada dokumen.
+  - Jangan menjawab tanpa berdasarkan dokumen yang diberikan. Jangan tambahkan informasi yang tidak ada dalam dokumen.
 
 
     ====OUTPUT====
