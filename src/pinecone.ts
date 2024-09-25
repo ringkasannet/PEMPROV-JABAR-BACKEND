@@ -4,6 +4,9 @@ import {
     type Index,
 } from "@pinecone-database/pinecone";
 import { embedding } from "./openAI.js";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 let pc: Pinecone, indexBUMD: Index, indexAset: Index;
 console.log("Node mode:", process.env.NODE_ENV);
@@ -17,10 +20,9 @@ if (process.env.NODE_ENV === "development") {
     indexAset = pc.index("aset");
 } else if (process.env.NODE_ENV === "production") {
     // ringkasan net account
-
     console.log("Using private production pinecone");
     pc = new Pinecone({
-        apiKey: "6b96a466-044b-4593-804d-91d60ee89012",
+        apiKey: process.env.PINECONE_API_KEY,
     });
     indexBUMD = pc.index("pemprovjabar");
     indexAset = pc.index("pemanfaatan-aset");

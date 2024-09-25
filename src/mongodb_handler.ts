@@ -1,7 +1,9 @@
 import { Collection, MongoClient, ServerApiVersion } from "mongodb";
+import * as dotenv from "dotenv";
 
-const uri =
-  "mongodb+srv://ringkasannet:lp1POBCzo98wlAYK@pemprov-jabar.cd5e79l.mongodb.net/?retryWrites=true&w=majority&appName=pemprov-jabar";
+dotenv.config();
+
+const uri = process.env.MONGO_DB_URI;
 
 export let dbClient: MongoClient;
 
