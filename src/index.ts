@@ -7,6 +7,7 @@ import { initConnection } from "./mongodb_handler";
 import { dmsRouter } from "./router/dmsRouter";
 import { asetRouter } from "./router/asetRouter";
 import { bumdRouter } from "./router/bumdRouter";
+import { migrasiRouter } from "./router/migrasiRouter";
 const app = express();
 
 const port = parseInt(process.env.PORT) || 3000;
@@ -16,6 +17,7 @@ app.use("/", router);
 app.use("/dms", dmsRouter);
 app.use("/aset", asetRouter);
 app.use("/bumd", bumdRouter);
+app.use("/migrasi", migrasiRouter);
 
 function init() {
     try {

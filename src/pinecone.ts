@@ -14,18 +14,18 @@ if (process.env.NODE_ENV === "development") {
     // private account
     console.log("Using development pinecone");
     pc = new Pinecone({
-        apiKey: "5a0aa56c-d5c6-4e21-8b28-0bb9d68174c7",
+        apiKey: process.env.PINECONE_API_KEY,
     });
-    indexBUMD = pc.index("bumd");
-    indexAset = pc.index("aset");
+    indexBUMD = pc.index("bumd"); 
+    indexAset = pc.index("asset");
 } else if (process.env.NODE_ENV === "production") {
     // ringkasan net account
     console.log("Using private production pinecone");
     pc = new Pinecone({
         apiKey: process.env.PINECONE_API_KEY,
     });
-    indexBUMD = pc.index("pemprovjabar");
-    indexAset = pc.index("pemanfaatan-aset");
+    indexBUMD = pc.index("bumd");
+    indexAset = pc.index("asset");
 }
 
 const index = new Map<string, Index>();
@@ -80,5 +80,13 @@ export async function getAllVector(context: string) {
         throw new Error("context not found");
     }
     const vectors = await index.get(context).listPaginated();
+    return vectors;
+}
+
+export async function fetchAllVector(context: string, arrayId: string[]) {
+    if (!index.has(context)) {
+        throw new Error("context not found");
+    }
+    const vectors = await index.get(context).fetch(arrayId);
     return vectors;
 }

@@ -3,11 +3,12 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 
-const uri = process.env.MONGO_DB_URI;
+// const uri = process.env.MONGO_DB_URI;
+const uri = 'mongodb+srv://jdihprovjabar:to2tZNc3DqQdaZZi@cluster0.b0vqa.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 
 export let dbClient: MongoClient;
 
-const dbName = "pemprov-jabar-bumd";
+const dbName = "Cluster0";
 
 let colNameBUMD:string;
 let colNameAset:string;
@@ -16,12 +17,12 @@ let colNameAset:string;
 
 if (process.env.NODE_ENV === "development") {
   console.log("using development mongoDB");
-  colNameBUMD = "test-bumd";
-  colNameAset = "test-aset";
+  colNameBUMD = "bumd";
+  colNameAset = "asset";
 } else if (process.env.NODE_ENV === "production"){
   console.log("using production mongoDB");
-  colNameBUMD = "BUMD";
-  colNameAset = "Asset";
+  colNameBUMD = "bumd";
+  colNameAset = "asset";
 }
 
 export let collectionBUMD:Collection = null;
