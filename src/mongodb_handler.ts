@@ -3,8 +3,7 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 
-// const uri = process.env.MONGO_DB_URI;
-const uri = 'mongodb+srv://jdihprovjabar:to2tZNc3DqQdaZZi@cluster0.b0vqa.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+const uri = process.env.MONGO_DB_URI;
 
 export let dbClient: MongoClient;
 
