@@ -4,26 +4,28 @@ import {
     type Index,
 } from "@pinecone-database/pinecone";
 import { embedding } from "./openAI.js";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 let pc: Pinecone, indexBUMD: Index, indexAset: Index;
 console.log("Node mode:", process.env.NODE_ENV);
 if (process.env.NODE_ENV === "development") {
-    // private account
+    // development account
     console.log("Using development pinecone");
     pc = new Pinecone({
-        apiKey: "5a0aa56c-d5c6-4e21-8b28-0bb9d68174c7",
+        apiKey: "",
     });
-    indexBUMD = pc.index("bumd");
-    indexAset = pc.index("aset");
+    indexBUMD = pc.index("");
+    indexAset = pc.index("");
 } else {
-    // ringkasan net account
-
+    // production account
     console.log("Using private production pinecone");
     pc = new Pinecone({
-        apiKey: "6b96a466-044b-4593-804d-91d60ee89012",
+        apiKey: process.env.PINECONE_API_KEY,
     });
-    indexBUMD = pc.index("pemprovjabar");
-    indexAset = pc.index("pemanfaatan-aset");
+    indexBUMD = pc.index("bumd");
+    indexAset = pc.index("asset");
 }
 
 const index = new Map<string, Index>();
